@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -26,13 +27,12 @@ const statuts = ['Disponible', 'En Mission', 'Maintenance', 'Immobilisé'];
 // DONNÉES INITIALES
 // ============================================================================
 const initialVehicles = [
-
   { id: '2', immatriculation: 'CD-5678-GA', marque: 'Nissan', modele: 'Patrol', categorie: '4x4', annee: 2021, kilometrage: 62000, statut: 'En Mission', chauffeur: 'Pierre Nzong', direction: 'Direction Technique', carburant: 'Diesel', puissance: '275 CV', couleur: 'Noir', dateAchat: '2021-06-20', prixAchat: 52000000, assuranceExpire: '2025-06-20', visiteExpire: '2025-06-18', image: 'https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=400' },
   { id: '3', immatriculation: 'EF-9012-GA', marque: 'Toyota', modele: 'Hilux', categorie: 'Pickup', annee: 2023, kilometrage: 38000, statut: 'Maintenance', chauffeur: null, direction: 'Direction Commerciale', carburant: 'Diesel', puissance: '150 CV', couleur: 'Gris', dateAchat: '2023-01-10', prixAchat: 35000000, assuranceExpire: '2026-01-10', visiteExpire: '2026-01-08', image: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400' },
-  { id: '4', immatriculation: 'GH-3456-GA', marque: 'Mercedes', modele: 'Sprinter', categorie: 'Utilitaire', annee: 2020, kilometrage: 28000, statut: 'Disponible', chauffeur: 'Paul Ondo', direction: 'Direction Logistique', carburant: 'Diesel', puissance: '163 CV', couleur: 'Blanc', dateAchat: '2020-09-05', prixAchat: 42000000, assuranceExpire: '2025-09-05', visiteExpire: '2025-09-03', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400' },
   { id: '5', immatriculation: 'IJ-7890-GA', marque: 'Peugeot', modele: '508', categorie: 'Berline', annee: 2022, kilometrage: 95000, statut: 'Immobilisé', chauffeur: null, direction: 'Direction Financière', carburant: 'Essence', puissance: '165 CV', couleur: 'Noir', dateAchat: '2022-07-12', prixAchat: 28000000, assuranceExpire: '2025-07-12', visiteExpire: '2025-07-10', image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400' },
   { id: '6', immatriculation: 'KL-1234-GA', marque: 'Toyota', modele: 'Prado', categorie: '4x4', annee: 2021, kilometrage: 52000, statut: 'Disponible', chauffeur: 'Marc Essono', direction: 'Direction RH', carburant: 'Diesel', puissance: '177 CV', couleur: 'Blanc', dateAchat: '2021-11-20', prixAchat: 48000000, assuranceExpire: '2025-11-20', visiteExpire: '2025-11-18', image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400' },
   { id: '7', immatriculation: 'MN-5678-GA', marque: 'Ford', modele: 'Ranger', categorie: 'Pickup', annee: 2023, kilometrage: 41000, statut: 'En Mission', chauffeur: 'Luc Mba', direction: 'Direction Technique', carburant: 'Diesel', puissance: '170 CV', couleur: 'Bleu', dateAchat: '2023-04-08', prixAchat: 38000000, assuranceExpire: '2026-04-08', visiteExpire: '2026-04-06', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400' },
+  
   { id: '8', immatriculation: 'OP-9012-GA', marque: 'Mitsubishi', modele: 'Pajero', categorie: '4x4', annee: 2020, kilometrage: 35000, statut: 'Disponible', chauffeur: null, direction: 'Transport de Fonds', carburant: 'Diesel', puissance: '190 CV', couleur: 'Argent', dateAchat: '2020-12-01', prixAchat: 46000000, assuranceExpire: '2025-12-01', visiteExpire: '2025-11-29', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400' }
 ];
 
@@ -167,6 +167,17 @@ const Vehicules = () => {
   const [toast, setToast] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
 
+  // ── États pour la gestion des filtres ──
+  const [showFilterManagement, setShowFilterManagement] = useState(false);
+  const [filterManagementTab, setFilterManagementTab] = useState('categories');
+  const [customCategories, setCustomCategories] = useState([...categories]);
+  const [customMarques, setCustomMarques] = useState([...marques]);
+  const [customModeles, setCustomModeles] = useState({ ...modeles });
+  const [newCategory, setNewCategory] = useState('');
+  const [newMarque, setNewMarque] = useState('');
+  const [selectedMarqueForModel, setSelectedMarqueForModel] = useState('');
+  const [newModele, setNewModele] = useState('');
+
   const [formData, setFormData] = useState({
     immatriculation: '', marque: '', modele: '', categorie: '', annee: new Date().getFullYear(),
     kilometrage: 0, statut: 'Disponible', chauffeur: null, direction: '', carburant: 'Diesel',
@@ -189,8 +200,8 @@ const Vehicules = () => {
 
   const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
   const paginatedVehicles = filteredVehicles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const availableModeles = filterMarque ? modeles[filterMarque] || [] : [];
-  const formAvailableModeles = formData.marque ? modeles[formData.marque] || [] : [];
+  const availableModeles = filterMarque ? customModeles[filterMarque] || [] : [];
+  const formAvailableModeles = formData.marque ? customModeles[formData.marque] || [] : [];
 
   // ── Handlers ──
   const showToast = (message, type) => setToast({ message, type });
@@ -223,6 +234,56 @@ const Vehicules = () => {
     showToast(`Statut changé en "${newStatut}"`, 'success');
   };
 
+  // ── Handlers pour la gestion des filtres ──
+  const handleAddCategory = () => {
+    if (newCategory.trim() && !customCategories.includes(newCategory.trim())) {
+      setCustomCategories([...customCategories, newCategory.trim()]);
+      setNewCategory('');
+      showToast('Catégorie ajoutée avec succès', 'success');
+    }
+  };
+
+  const handleDeleteCategory = (category) => {
+    setCustomCategories(customCategories.filter(c => c !== category));
+    showToast('Catégorie supprimée avec succès', 'success');
+  };
+
+  const handleAddMarque = () => {
+    if (newMarque.trim() && !customMarques.includes(newMarque.trim())) {
+      setCustomMarques([...customMarques, newMarque.trim()]);
+      setCustomModeles({ ...customModeles, [newMarque.trim()]: [] });
+      setNewMarque('');
+      showToast('Marque ajoutée avec succès', 'success');
+    }
+  };
+
+  const handleDeleteMarque = (marque) => {
+    setCustomMarques(customMarques.filter(m => m !== marque));
+    const newModeles = { ...customModeles };
+    delete newModeles[marque];
+    setCustomModeles(newModeles);
+    showToast('Marque supprimée avec succès', 'success');
+  };
+
+  const handleAddModele = () => {
+    if (selectedMarqueForModel && newModele.trim() && !customModeles[selectedMarqueForModel]?.includes(newModele.trim())) {
+      setCustomModeles({
+        ...customModeles,
+        [selectedMarqueForModel]: [...(customModeles[selectedMarqueForModel] || []), newModele.trim()]
+      });
+      setNewModele('');
+      showToast('Modèle ajouté avec succès', 'success');
+    }
+  };
+
+  const handleDeleteModele = (marque, modele) => {
+    setCustomModeles({
+      ...customModeles,
+      [marque]: customModeles[marque].filter(m => m !== modele)
+    });
+    showToast('Modèle supprimé avec succès', 'success');
+  };
+
   const openEditModal = (vehicle) => { setSelectedVehicle(vehicle); setFormData(vehicle); setShowEditModal(true); };
   const openDetailModal = (vehicle) => { setSelectedVehicle(vehicle); setDetailTab('general'); setShowDetailModal(true); };
   const openDeleteConfirm = (vehicle) => { setVehicleToDelete(vehicle); setShowDeleteConfirm(true); };
@@ -253,27 +314,6 @@ const Vehicules = () => {
     const consommationMoyenne = totalCarburant > 0 && totalKmMissions > 0 ? ((totalCarburant / totalKmMissions) * 100).toFixed(1) : 0;
     return { totalCarburant, totalCarburantCout, totalMaintenance, totalMissions: miss.length, totalKmMissions, consommationMoyenne, coutTotal: totalCarburantCout + totalMaintenance };
   };
-    {/* ============================================================================ */}
-      {/* UTILISATION DU COMPOSANT SIDEBAR IMPORTÉ */}
-      {/* ============================================================================ */}
-      <Sidebar 
-        darkMode={darkMode} 
-        sidebarCollapsed={sidebarCollapsed} 
-        setSidebarCollapsed={setSidebarCollapsed}
-      />
-
-      {/* ============================================================================ */}
-      {/* UTILISATION DU COMPOSANT HEADER IMPORTÉ */}
-      {/* ============================================================================ */}
-      <Header 
-        darkMode={darkMode} 
-        setDarkMode={setDarkMode} 
-        sidebarCollapsed={sidebarCollapsed}
-        showNotifications={showNotifications}
-        setShowNotifications={setShowNotifications}
-        showProfile={showProfile}
-        setShowProfile={setShowProfile}
-      />
 
   // ============================================================================
   // STATS CARDS — même style que Dashboard (rounded-xl, p-6, hover, fadeInUp)
@@ -353,13 +393,13 @@ const Vehicules = () => {
               <select value={filterCategorie} onChange={(e) => { setFilterCategorie(e.target.value); setCurrentPage(1); }}
                 className={`px-3 py-2 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} style={{ '--tw-ring-color': theme.primary }}>
                 <option value="">Catégorie</option>
-                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                {customCategories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
 
               <select value={filterMarque} onChange={(e) => { setFilterMarque(e.target.value); setFilterModele(''); setCurrentPage(1); }}
                 className={`px-3 py-2 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} style={{ '--tw-ring-color': theme.primary }}>
                 <option value="">Marque</option>
-                {marques.map(m => <option key={m} value={m}>{m}</option>)}
+                {customMarques.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
 
               <select value={filterModele} onChange={(e) => { setFilterModele(e.target.value); setCurrentPage(1); }} disabled={!filterMarque}
@@ -381,8 +421,13 @@ const Vehicules = () => {
               )}
             </div>
 
-            {/* View toggle + Ajouter */}
+            {/* View toggle + Gérer filtres + Ajouter */}
             <div className="flex items-center gap-3">
+              <button onClick={() => setShowFilterManagement(true)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 ${darkMode ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} transition-colors`}>
+                <i className="bi bi-funnel"></i> Gestion filtres
+              </button>
+
               <div className={`flex rounded-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} overflow-hidden`}>
                 <button onClick={() => setViewMode('table')}
                   className={`px-3 py-2 transition-colors ${viewMode === 'table' ? 'text-white' : darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100'}`}
@@ -399,7 +444,7 @@ const Vehicules = () => {
               <button onClick={() => setShowAddModal(true)}
                 className="px-5 py-2 rounded-lg text-white text-sm font-medium flex items-center gap-2 shadow-sm hover:opacity-90 hover:shadow-md transition-all"
                 style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})` }}>
-                <i className="bi bi-plus-lg"></i> Ajouter
+                <i className="bi bi-plus-lg"></i> Ajouter un véhicule
               </button>
             </div>
           </div>
@@ -448,9 +493,10 @@ const Vehicules = () => {
                             <i className="bi bi-pencil"></i>
                           </button>
                           <div className="relative">
-                            <button onClick={() => setActiveMenu(activeMenu === vehicle.id ? null : vehicle.id)} className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-900'} transition-colors`}>
-                              <i className="bi bi-three-dots-vertical"></i>
-                            </button>
+                           <button onClick={() => { openDeleteConfirm(vehicle); setActiveMenu(null); }}
+                                  className={`w-full text-left px-3 py-2 text-sm text-red-500 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-red-50'} transition-colors`}>
+                                  <i className="bi bi-trash mr-2"></i>
+                                </button>
                             {activeMenu === vehicle.id && (
                               <div className={`absolute right-0 mt-1 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50`}>
                                 <p className={`px-3 py-2 text-xs font-semibold ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Changer statut</p>
@@ -571,6 +617,152 @@ const Vehicules = () => {
       </main>
 
       {/* ============================================================ */}
+      {/* MODAL — GESTION DES FILTRES                                 */}
+      {/* ============================================================ */}
+      {showFilterManagement && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className={`${darkMode ? 'bg-gray-900' : 'bg-white'} rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl`}>
+            <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'} flex items-center justify-between`}>
+              <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Gestion des filtres</h2>
+              <button onClick={() => setShowFilterManagement(false)} className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'} transition-colors`}>
+                <i className="bi bi-x-lg text-lg"></i>
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div className={`border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'} px-6 flex gap-1`}>
+              {[
+                { key: 'categories', label: 'Catégories', icon: 'bi-tag' },
+                { key: 'marques', label: 'Marques', icon: 'bi-building' },
+                { key: 'modeles', label: 'Modèles', icon: 'bi-car-front' }
+              ].map(tab => (
+                <button key={tab.key} onClick={() => setFilterManagementTab(tab.key)}
+                  className={`px-4 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-all ${
+                    filterManagementTab === tab.key
+                      ? 'border-transparent text-white'
+                      : `border-transparent ${darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'}`
+                  }`}
+                  style={filterManagementTab === tab.key ? { background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`, borderRadius: '8px 8px 0 0' } : {}}>
+                  <i className={tab.icon}></i>{tab.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Catégories */}
+              {filterManagementTab === 'categories' && (
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="Nouvelle catégorie"
+                      className={`flex-1 px-4 py-2.5 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} 
+                      style={{ '--tw-ring-color': theme.primary }}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddCategory()} />
+                    <button onClick={handleAddCategory}
+                      className="px-5 py-2.5 rounded-lg text-white text-sm font-medium shadow-sm hover:opacity-90 transition-all"
+                      style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})` }}>
+                      <i className="bi bi-plus-lg mr-2"></i>Ajouter
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {customCategories.map(cat => (
+                      <div key={cat} className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} border rounded-lg p-3 flex items-center justify-between`}>
+                        <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{cat}</span>
+                        <button onClick={() => handleDeleteCategory(cat)}
+                          className={`p-1.5 rounded ${darkMode ? 'hover:bg-gray-700 text-red-400' : 'hover:bg-red-50 text-red-600'} transition-colors`}>
+                          <i className="bi bi-trash text-sm"></i>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Marques */}
+              {filterManagementTab === 'marques' && (
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <input type="text" value={newMarque} onChange={(e) => setNewMarque(e.target.value)} placeholder="Nouvelle marque"
+                      className={`flex-1 px-4 py-2.5 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} 
+                      style={{ '--tw-ring-color': theme.primary }}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddMarque()} />
+                    <button onClick={handleAddMarque}
+                      className="px-5 py-2.5 rounded-lg text-white text-sm font-medium shadow-sm hover:opacity-90 transition-all"
+                      style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})` }}>
+                      <i className="bi bi-plus-lg mr-2"></i>Ajouter
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {customMarques.map(marque => (
+                      <div key={marque} className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} border rounded-lg p-3 flex items-center justify-between`}>
+                        <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{marque}</span>
+                        <button onClick={() => handleDeleteMarque(marque)}
+                          className={`p-1.5 rounded ${darkMode ? 'hover:bg-gray-700 text-red-400' : 'hover:bg-red-50 text-red-600'} transition-colors`}>
+                          <i className="bi bi-trash text-sm"></i>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Modèles */}
+              {filterManagementTab === 'modeles' && (
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <select value={selectedMarqueForModel} onChange={(e) => setSelectedMarqueForModel(e.target.value)}
+                      className={`px-4 py-2.5 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} 
+                      style={{ '--tw-ring-color': theme.primary }}>
+                      <option value="">Sélectionner une marque</option>
+                      {customMarques.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                    <input type="text" value={newModele} onChange={(e) => setNewModele(e.target.value)} placeholder="Nouveau modèle" disabled={!selectedMarqueForModel}
+                      className={`flex-1 px-4 py-2.5 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2 disabled:opacity-50`} 
+                      style={{ '--tw-ring-color': theme.primary }}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddModele()} />
+                    <button onClick={handleAddModele} disabled={!selectedMarqueForModel}
+                      className="px-5 py-2.5 rounded-lg text-white text-sm font-medium shadow-sm hover:opacity-90 transition-all disabled:opacity-50"
+                      style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})` }}>
+                      <i className="bi bi-plus-lg mr-2"></i>Ajouter
+                    </button>
+                  </div>
+                  {selectedMarqueForModel && (
+                    <div>
+                      <h3 className={`text-sm font-semibold mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Modèles de {selectedMarqueForModel}</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {(customModeles[selectedMarqueForModel] || []).map(modele => (
+                          <div key={modele} className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} border rounded-lg p-3 flex items-center justify-between`}>
+                            <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{modele}</span>
+                            <button onClick={() => handleDeleteModele(selectedMarqueForModel, modele)}
+                              className={`p-1.5 rounded ${darkMode ? 'hover:bg-gray-700 text-red-400' : 'hover:bg-red-50 text-red-600'} transition-colors`}>
+                              <i className="bi bi-trash text-sm"></i>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {!selectedMarqueForModel && (
+                    <div className="text-center py-12">
+                      <i className={`bi bi-car-front text-5xl ${darkMode ? 'text-gray-600' : 'text-gray-300'}`}></i>
+                      <p className={`mt-3 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Sélectionnez une marque pour voir ses modèles</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className={`p-6 border-t ${darkMode ? 'border-gray-800' : 'border-gray-200'} flex items-center justify-end`}>
+              <button onClick={() => setShowFilterManagement(false)}
+                className="px-5 py-2.5 rounded-lg text-white text-sm font-medium shadow-sm hover:opacity-90 transition-all"
+                style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})` }}>
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
       {/* MODAL — AJOUTER                                               */}
       {/* ============================================================ */}
       {showAddModal && (
@@ -609,7 +801,7 @@ const Vehicules = () => {
                   <select value={formData.categorie} onChange={(e) => setFormData({ ...formData, categorie: e.target.value })}
                     className={`w-full px-3 py-2.5 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} style={{ '--tw-ring-color': theme.primary }}>
                     <option value="">Sélectionner</option>
-                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    {customCategories.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
@@ -617,7 +809,7 @@ const Vehicules = () => {
                   <select value={formData.marque} onChange={(e) => setFormData({ ...formData, marque: e.target.value, modele: '' })}
                     className={`w-full px-3 py-2.5 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} style={{ '--tw-ring-color': theme.primary }}>
                     <option value="">Sélectionner</option>
-                    {marques.map(m => <option key={m} value={m}>{m}</option>)}
+                    {customMarques.map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
                 <div>
@@ -687,14 +879,14 @@ const Vehicules = () => {
                   <label className={`block text-sm font-medium mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Catégorie *</label>
                   <select value={formData.categorie} onChange={(e) => setFormData({ ...formData, categorie: e.target.value })}
                     className={`w-full px-3 py-2.5 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} style={{ '--tw-ring-color': theme.primary }}>
-                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    {customCategories.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className={`block text-sm font-medium mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Marque *</label>
                   <select value={formData.marque} onChange={(e) => setFormData({ ...formData, marque: e.target.value, modele: '' })}
                     className={`w-full px-3 py-2.5 rounded-lg border text-sm ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'} focus:outline-none focus:ring-2`} style={{ '--tw-ring-color': theme.primary }}>
-                    {marques.map(m => <option key={m} value={m}>{m}</option>)}
+                    {customMarques.map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
                 <div>
@@ -743,29 +935,38 @@ const Vehicules = () => {
       )}
 
       {/* ============================================================ */}
-      {/* MODAL — DÉTAILS (tabbed)                                      */}
+      {/* MODAL — DÉTAILS (tabbed) - IMAGE GRANDE                       */}
       {/* ============================================================ */}
       {showDetailModal && selectedVehicle && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className={`${darkMode ? 'bg-gray-900' : 'bg-white'} rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl`}>
-            {/* Header détails */}
-            <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'} flex items-center justify-between`}>
-              <div className="flex items-center gap-4">
-                <img src={selectedVehicle.image || '/placeholder.svg'} alt={selectedVehicle.marque} className="w-16 h-16 rounded-xl object-cover shadow-md" />
-                <div>
-                  <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{selectedVehicle.immatriculation}</h2>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{selectedVehicle.marque} {selectedVehicle.modele} · {selectedVehicle.annee}</p>
+          <div className={`${darkMode ? 'bg-gray-900' : 'bg-white'} rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl`}>
+            {/* Header détails avec grande image */}
+            <div className={`border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+              <div className="relative h-64 overflow-hidden">
+                <img src={selectedVehicle.image || '/placeholder.svg'} alt={selectedVehicle.marque} className="w-full h-full object-contain bg-gradient-to-br from-gray-900 to-gray-800" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                <button onClick={() => setShowDetailModal(false)} 
+                  className="absolute top-4 right-4 p-2 rounded-lg bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm transition-colors">
+                  <i className="bi bi-x-lg text-xl"></i>
+                </button>
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <h2 className="text-3xl font-bold text-white mb-1">{selectedVehicle.immatriculation}</h2>
+                      <p className="text-lg text-gray-200">{selectedVehicle.marque} {selectedVehicle.modele} · {selectedVehicle.annee}</p>
+                    </div>
+                    <span className={`px-4 py-2 rounded-lg text-sm font-medium backdrop-blur-sm ${getStatutColor(selectedVehicle.statut)}`}>
+                      {selectedVehicle.statut}
+                    </span>
+                  </div>
                 </div>
-                <span className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${getStatutColor(selectedVehicle.statut)}`}>{selectedVehicle.statut}</span>
               </div>
-              <button onClick={() => setShowDetailModal(false)} className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'} transition-colors`}>
-                <i className="bi bi-x-lg text-xl"></i>
-              </button>
             </div>
 
             {/* Tabs — même style gradient actif que sidebar */}
             <div className={`border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'} px-6 flex gap-1 overflow-x-auto`}>
               {[
+        
                 { key: 'general', label: 'Général', icon: 'bi-info-circle' },
                 { key: 'documents', label: 'Documents', icon: 'bi-file-earmark-text' },
                 { key: 'maintenance', label: 'Maintenance', icon: 'bi-tools' },

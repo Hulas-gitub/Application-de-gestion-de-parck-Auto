@@ -5,9 +5,9 @@ import Dashboard from './Admin/Navigation/Dashboard';
 import Theme from './Admin/Navigation/Theme';
 import Utilisateurs from './Admin/Navigation/Utilisateurs';
 import Vehicules from './Admin/Navigation/Vehicules';
-import Configuration from './Admin/Navigation/Configuration';
-
-
+import Interventions from './Admin/Navigation/Interventions';
+import FournisseursOutils from './Admin/Navigation/FournisseursOutils';
+import InspectionVehicules from './Admin/Navigation/InspectionVehicules';
 // Composant pour protéger les routes
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -62,16 +62,33 @@ function App() {
             } 
           />
 
-         {/* Route protégée - Gestion des Configurations */}
+         {/* Route protégée - Gestion des Interventions*/}
           <Route 
-            path="/Admin/Navigation/Configuration"
+            path="/Admin/Navigation/Interventions"
             element={
               <ProtectedRoute>
-                <Configuration/>
+                <Interventions/>
               </ProtectedRoute>
             } 
           />
-
+   {/* Route protégée - Gestion des InspectionVehicules*/}
+          <Route 
+            path="/Admin/Navigation/InspectionVehicules"
+            element={
+              <ProtectedRoute>
+                <InspectionVehicules/>
+              </ProtectedRoute>
+            } 
+          />
+   {/* Route protégée - Gestion des Fournisseurs-Outils */}
+          <Route 
+            path="/Admin/Navigation/FournisseursOutils"
+            element={
+              <ProtectedRoute>
+                <FournisseursOutils/>
+              </ProtectedRoute>
+            } 
+          />
           {/* Route protégée - Gestion des Thèmes */}
           <Route 
             path="/Admin/Navigation/Theme"

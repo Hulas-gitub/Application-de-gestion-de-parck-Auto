@@ -14,24 +14,12 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
     <header className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border-b px-6 py-4 flex items-center justify-between fixed top-0 right-0 left-0 z-30 transition-all duration-300`}
       style={{ left: sidebarCollapsed ? '5rem' : '18rem' }}>
       <div>
-        <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Dashboard Admin</h2>
-        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Vue d'ensemble du parc automobile</p>
+        <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Interface d'administration</h2>
+        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Gestion du parc automobile</p>
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="relative hidden md:block">
-          <i className={`bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}></i>
-          <input 
-            type="text"
-            placeholder="Rechercher..."
-            className={`pl-10 pr-4 py-2 rounded-lg border ${
-              darkMode 
-                ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400' 
-                : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
-            } focus:outline-none focus:ring-2 w-64`}
-            style={{ '--tw-ring-color': theme.primary }}
-          />
-        </div>
+       
 
         <button 
           onClick={() => setDarkMode(!darkMode)}
@@ -102,7 +90,7 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
               background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})`
             }}
           >
-            JD
+            HD
           </div>
 
           {showProfile && (
@@ -115,11 +103,11 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
                       background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})`
                     }}
                   >
-                    JD
+                    HD
                   </div>
                   <div>
-                    <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Jean Dupont</p>
-                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>jean.dupont@sgs.com</p>
+                    <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Hulas DJYEMBI</p>
+                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>hulas.djyembi@sgs-gabon.com</p>
                   </div>
                 </div>
               </div>
@@ -132,10 +120,7 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
                   <i className="bi bi-gear-fill text-lg"></i>
                   <span className="text-sm">Paramètres</span>
                 </button>
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'} transition-colors`}>
-                  <i className="bi bi-question-circle-fill text-lg"></i>
-                  <span className="text-sm">Aide</span>
-                </button>
+          
               </div>
               <div className={`p-2 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                 <button 

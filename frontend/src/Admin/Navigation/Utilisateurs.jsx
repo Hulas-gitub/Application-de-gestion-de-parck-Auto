@@ -515,345 +515,356 @@ const Utilisateurs = () => {
   // MODALS
   // ============================================================================
 
-  // Modal Ajouter/Modifier
-  const FormModal = ({ show, onClose, title, onSubmit, type }) => {
-    if (!show) return null;
+ // Modal Ajouter/Modifier utilisateur;roles;direction
+const FormModal = ({ show, onClose, title, onSubmit, type, initialData }) => {
+  const [localFormData, setLocalFormData] = React.useState(initialData || {});
 
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div className={`${darkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto`}>
-          <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
-            <div className="flex items-center justify-between">
-              <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{title}</h3>
-              <button 
-                onClick={onClose}
-                className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} transition-colors`}
-              >
-                <i className={`bi bi-x-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}></i>
-              </button>
-            </div>
-          </div>
+  React.useEffect(() => {
+    setLocalFormData(initialData || {});
+  }, [initialData, show]);
 
-          <div className="p-6">
-            {type === 'utilisateur' && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Nom <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.nom || ''}
-                    onChange={(e) => setFormData({...formData, nom: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="Dupont"
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Prénom <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.prenom || ''}
-                    onChange={(e) => setFormData({...formData, prenom: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="Jean"
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Email <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email || ''}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="jean.dupont@sgs.ga"
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Téléphone <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.telephone || ''}
-                    onChange={(e) => setFormData({...formData, telephone: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="+241 77 00 00 00"
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Rôle <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={formData.roleId || ''}
-                    onChange={(e) => setFormData({...formData, roleId: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                  >
-                    <option value="">Sélectionner un rôle</option>
-                    {rolesData.filter(r => r.estActif).map(role => (
-                      <option key={role.id} value={role.id}>{role.nom}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Direction <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={formData.directionId || ''}
-                    onChange={(e) => setFormData({...formData, directionId: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                  >
-                    <option value="">Sélectionner une direction</option>
-                    {directionsData.filter(d => d.estActif).map(dir => (
-                      <option key={dir.id} value={dir.id}>{dir.nom}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
+  if (!show) return null;
 
-            {type === 'role' && (
-              <div className="space-y-4">
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Code <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.code || ''}
-                    onChange={(e) => setFormData({...formData, code: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="admin"
-                    disabled={currentItem !== null}
-                  />
-                  {currentItem === null && (
-                    <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-600'} mt-1`}>
-                      Le code sera automatiquement formaté en minuscules
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Nom <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.nom || ''}
-                    onChange={(e) => setFormData({...formData, nom: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="Administrateur"
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Description
-                  </label>
-                  <textarea
-                    value={formData.description || ''}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    rows="3"
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="Description du rôle"
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Niveau d'accès <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={formData.niveauAcces || ''}
-                    onChange={(e) => setFormData({...formData, niveauAcces: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                  >
-                    <option value="">Sélectionner</option>
-                    <option value="Complet">Complet</option>
-                    <option value="Élevé">Élevé</option>
-                    <option value="Moyen">Moyen</option>
-                    <option value="Limité">Limité</option>
-                  </select>
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Permissions (séparées par des virgules)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.permissions || ''}
-                    onChange={(e) => setFormData({...formData, permissions: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="Gestion utilisateurs, Gestion véhicules"
-                  />
-                </div>
-              </div>
-            )}
+  const handleSubmit = () => {
+    onSubmit(localFormData);
+  };
 
-            {type === 'direction' && (
-              <div className="space-y-4">
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Code <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.code || ''}
-                    onChange={(e) => setFormData({...formData, code: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="DG"
-                    disabled={currentItem !== null}
-                  />
-                  {currentItem === null && (
-                    <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-600'} mt-1`}>
-                      Le code sera automatiquement formaté en majuscules
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Nom <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.nom || ''}
-                    onChange={(e) => setFormData({...formData, nom: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="Direction Générale"
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Description
-                  </label>
-                  <textarea
-                    value={formData.description || ''}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    rows="3"
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="Description de la direction"
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                    Responsable
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.responsable || ''}
-                    onChange={(e) => setFormData({...formData, responsable: e.target.value})}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white' 
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:ring-2`}
-                    style={{ '--tw-ring-color': theme.primary }}
-                    placeholder="Nom du responsable"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className={`p-6 border-t ${darkMode ? 'border-gray-800' : 'border-gray-200'} flex justify-end gap-3`}>
-            <button
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className={`${darkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto`}>
+        <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+          <div className="flex items-center justify-between">
+            <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{title}</h3>
+            <button 
               onClick={onClose}
-              className={`px-6 py-2 rounded-lg border ${
-                darkMode 
-                  ? 'border-gray-700 text-gray-300 hover:bg-gray-800' 
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              } transition-colors`}
+              className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} transition-colors`}
             >
-              Annuler
-            </button>
-            <button
-              onClick={onSubmit}
-              className="px-6 py-2 rounded-lg text-white font-medium transition-all hover:opacity-90"
-              style={{
-                background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
-              }}
-            >
-              {currentItem ? 'Modifier' : 'Ajouter'}
+              <i className={`bi bi-x-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}></i>
             </button>
           </div>
         </div>
-      </div>
-    );
-  };
 
+        <div className="p-6">
+          {type === 'utilisateur' && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Nom <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={localFormData.nom || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, nom: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="Dupont"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Prénom <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={localFormData.prenom || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, prenom: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="Jean"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  value={localFormData.email || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, email: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="jean.dupont@sgs.ga"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Téléphone <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  value={localFormData.telephone || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, telephone: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="+241 77 00 00 00"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Rôle <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={localFormData.roleId || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, roleId: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                >
+                  <option value="">Sélectionner un rôle</option>
+                  {rolesData.filter(r => r.estActif).map(role => (
+                    <option key={role.id} value={role.id}>{role.nom}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Direction <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={localFormData.directionId || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, directionId: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                >
+                  <option value="">Sélectionner une direction</option>
+                  {directionsData.filter(d => d.estActif).map(dir => (
+                    <option key={dir.id} value={dir.id}>{dir.nom}</option>
+                  ))}
+                </select>
+              </div>
+   
+            
+            </div>
+          )}
+
+          {type === 'role' && (
+            <div className="space-y-4">
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Code <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={localFormData.code || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, code: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="admin"
+                  disabled={currentItem !== null}
+                />
+                {currentItem === null && (
+                  <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-600'} mt-1`}>
+                    Le code sera automatiquement formaté en minuscules
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Nom <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={localFormData.nom || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, nom: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="Administrateur"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Description
+                </label>
+                <textarea
+                  value={localFormData.description || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, description: e.target.value})}
+                  rows="3"
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="Description du rôle"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Niveau d'accès <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={localFormData.niveauAcces || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, niveauAcces: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                >
+                  <option value="">Sélectionner</option>
+                  <option value="Complet">Complet</option>
+                  <option value="Élevé">Élevé</option>
+                  <option value="Moyen">Moyen</option>
+                  <option value="Limité">Limité</option>
+                </select>
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Permissions (séparées par des virgules)
+                </label>
+                <input
+                  type="text"
+                  value={localFormData.permissions || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, permissions: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="Gestion utilisateurs, Gestion véhicules"
+                />
+              </div>
+            </div>
+          )}
+
+          {type === 'direction' && (
+            <div className="space-y-4">
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Code <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={localFormData.code || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, code: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="DG"
+                  disabled={currentItem !== null}
+                />
+                {currentItem === null && (
+                  <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-600'} mt-1`}>
+                    Le code sera automatiquement formaté en majuscules
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Nom <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={localFormData.nom || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, nom: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="Direction Générale"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Description
+                </label>
+                <textarea
+                  value={localFormData.description || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, description: e.target.value})}
+                  rows="3"
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="Description de la direction"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                  Responsable
+                </label>
+                <input
+                  type="text"
+                  value={localFormData.responsable || ''}
+                  onChange={(e) => setLocalFormData({...localFormData, responsable: e.target.value})}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 text-white' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  } focus:outline-none focus:ring-2`}
+                  style={{ '--tw-ring-color': theme.primary }}
+                  placeholder="Nom du responsable"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className={`p-6 border-t ${darkMode ? 'border-gray-800' : 'border-gray-200'} flex justify-end gap-3`}>
+          <button
+            onClick={onClose}
+            className={`px-6 py-2 rounded-lg border ${
+              darkMode 
+                ? 'border-gray-700 text-gray-300 hover:bg-gray-800' 
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+            } transition-colors`}
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handleSubmit}
+            className="px-6 py-2 rounded-lg text-white font-medium transition-all hover:opacity-90"
+            style={{
+              background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
+            }}
+          >
+            {currentItem ? 'Modifier' : 'Ajouter'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
   // Modal Supprimer
   const DeleteModal = ({ show, onClose, onConfirm, itemName }) => {
     if (!show) return null;
@@ -2095,6 +2106,7 @@ const Utilisateurs = () => {
           <div className="flex items-center justify-center">
             <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>
               © 2026 SGS Tous droits réservés - Version 1.0
+      
             </p>
           </div>
         </div>

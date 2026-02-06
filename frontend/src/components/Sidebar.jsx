@@ -30,7 +30,7 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
       items: [
         { 
           icon: 'bi-speedometer2', 
-          label: 'Tableau de bord Administrateur',    onClick: () => navigate('/Admin/Navigation/Dashboard'),
+          label: 'Tableau de bord ',    onClick: () => navigate('/Admin/Navigation/Dashboard'),
           path: '/Admin/Navigation/Dashboard' // ← Ajout du path
         },
         { 
@@ -54,10 +54,29 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
     {
       items: [
         { 
-          icon: 'bi-gear-fill', 
-          label: 'Configuration',
-          path: '/Admin/Navigation/Configuration',
-          onClick: () => navigate('/Admin/Navigation/Configuration')
+          icon: 'bi-clipboard-check-fill', 
+          label: 'Inteventions',
+          path: '/Admin/Navigation/Interventions',
+          onClick: () => navigate('/Admin/Navigation/Interventions')
+        }
+      ]
+    },
+       {
+      items: [
+        { 
+          icon: 'bi-wrench-adjustable-circle-fill', 
+          label: 'Inspection de véhicules',
+          path: '/Admin/Navigation/InspectionVehicules',
+          onClick: () => navigate('/Admin/Navigation/InspectionVehicules')
+        }
+      ]
+    },
+    {
+      items :[
+        {
+          icon : 'bi-box-seam-fill',
+          label : 'Fournisseurs & Outils',
+          path: '/Admin/Navigation/FournisseursOutils', onClick: () => navigate('/Admin/Navigation/FournisseursOutils')
         }
       ]
     },
@@ -226,7 +245,7 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
               background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})`
             }}
           >
-            JD
+            HD
           </div>
           {!sidebarCollapsed && (
             <div className="flex-1">
