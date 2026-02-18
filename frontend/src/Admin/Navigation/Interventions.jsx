@@ -888,8 +888,8 @@ const Interventions = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   item.est_actif
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800'
+                    : 'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
                 }`}>
                   {item.est_actif ? 'Actif' : 'Inactif'}
                 </span>
@@ -967,7 +967,7 @@ const Interventions = () => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 {item.est_obligatoire ? (
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-red-800">
                     Obligatoire
                   </span>
                 ) : (
@@ -979,8 +979,8 @@ const Interventions = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   item.est_actif
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800'
+                    : 'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
                 }`}>
                   {item.est_actif ? 'Actif' : 'Inactif'}
                 </span>
@@ -1059,8 +1059,8 @@ const Interventions = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   item.est_actif
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800'
+                    : 'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
                 }`}>
                   {item.est_actif ? 'Actif' : 'Inactif'}
                 </span>
@@ -1147,8 +1147,8 @@ const Interventions = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   item.est_actif
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800'
+                    : 'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
                 }`}>
                   {item.est_actif ? 'Actif' : 'Inactif'}
                 </span>

@@ -1,12 +1,59 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import Swal from 'sweetalert2';
 
 const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
   const { theme } = useTheme();
   const navigate = useNavigate();
-  const location = useLocation(); // ← Pour détecter l'URL actuelle
-  
+  const location = useLocation();
+
+  // ── Déconnexion avec confirmation SweetAlert2 ──
+  const handleLogout = () => {
+    Swal.fire({
+      background: darkMode ? '#111827' : '#ffffff',
+      color: darkMode ? '#f1f5f9' : '#111827',
+      icon: 'question',
+      iconColor: theme.primary,
+      title: 'Déconnexion',
+      text: 'Êtes-vous sûr de vouloir vous déconnecter ?',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, me déconnecter',
+      cancelButtonText: 'Annuler',
+      confirmButtonColor: theme.primary,
+      cancelButtonColor: darkMode ? '#374151' : '#9ca3af',
+      customClass: {
+        popup: 'swal-logout-popup',
+        confirmButton: 'swal-logout-confirm',
+        cancelButton: 'swal-logout-cancel',
+      },
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Nettoyer le localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('remember_me');
+        localStorage.removeItem('expires_at');
+
+        Swal.fire({
+          background: darkMode ? '#111827' : '#ffffff',
+          color: darkMode ? '#f1f5f9' : '#111827',
+          icon: 'success',
+          iconColor: '#22c55e',
+          title: 'À bientôt !',
+          text: 'Vous avez été déconnecté avec succès.',
+          timer: 1500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          customClass: { popup: 'swal-logout-popup' },
+        }).then(() => {
+          navigate('/');
+        });
+      }
+    });
+  };
+
   const [openMenus, setOpenMenus] = useState({
     configuration: false,
     audit: false,
@@ -17,9 +64,6 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
     setOpenMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
   };
 
-  // ============================================================================
-  // FONCTION POUR VÉRIFIER SI UN ITEM EST ACTIF
-  // ============================================================================
   const isActive = (path) => {
     if (!path) return false;
     return location.pathname === path;
@@ -30,12 +74,13 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
       items: [
         { 
           icon: 'bi-speedometer2', 
-          label: 'Tableau de bord ',    onClick: () => navigate('/Admin/Navigation/Dashboard'),
-          path: '/Admin/Navigation/Dashboard' // ← Ajout du path
+          label: 'Tableau de bord',
+          onClick: () => navigate('/Admin/Navigation/Dashboard'),
+          path: '/Admin/Navigation/Dashboard'
         },
         { 
           icon: 'bi-car-front-fill', 
-          label: 'Véhicules',
+          label: 'Gestion des véhicules',
           path: '/Admin/Navigation/Vehicules',
           onClick: () => navigate('/Admin/Navigation/Vehicules')
         },
@@ -45,7 +90,7 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
       items: [
         { 
           icon: 'bi-people-fill', 
-          label: 'Utilisateurs',
+          label: 'Gestion des utilisateurs',
           path: '/Admin/Navigation/Utilisateurs',
           onClick: () => navigate('/Admin/Navigation/Utilisateurs')
         }
@@ -53,15 +98,25 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
     },
     {
       items: [
+        {
+          icon: 'bi-person-badge-fill', 
+          label: 'Gestion des chauffeurs',
+          path: '/Admin/Navigation/Chauffeurs',
+          onClick: () => navigate('/Admin/Navigation/Chauffeurs')
+        }
+      ]
+    },
+    {
+      items: [
         { 
           icon: 'bi-clipboard-check-fill', 
-          label: 'Inteventions',
+          label: 'Interventions',
           path: '/Admin/Navigation/Interventions',
           onClick: () => navigate('/Admin/Navigation/Interventions')
         }
       ]
     },
-       {
+    {
       items: [
         { 
           icon: 'bi-wrench-adjustable-circle-fill', 
@@ -72,26 +127,17 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
       ]
     },
     {
-      items :[
-        {
-          icon : 'bi-box-seam-fill',
-          label : 'Fournisseurs & Outils',
-          path: '/Admin/Navigation/FournisseursOutils', onClick: () => navigate('/Admin/Navigation/FournisseursOutils')
-        }
-      ]
-    },
-    {
       items: [
         {
-          icon: 'bi-clock-fill', 
-          label: 'Historique de connexion',
-          path: '/Admin/Navigation/Historique',
-          onClick: () => navigate('/Admin/Navigation/Historique')
+          icon: 'bi-box-seam-fill',
+          label: 'Fournisseurs & Outils',
+          path: '/Admin/Navigation/FournisseursOutils',
+          onClick: () => navigate('/Admin/Navigation/FournisseursOutils')
         }
       ]
     },
     {
-      section: 'AUDIT & SÉCURITÉ',
+      section: 'AUDIT & LOGS',
       items: [
         { 
           icon: 'bi-shield-fill-check', 
@@ -99,8 +145,24 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
           hasSubmenu: true,
           key: 'audit',
           submenu: [
-            { label: 'Sécurité' },
-            { label: 'Sauvegardes' }
+            { 
+              label: 'Sécurité',
+              icon: 'bi-shield-lock-fill',
+              path: '/Admin/Navigation/Securite',
+              onClick: () => navigate('/Admin/Navigation/Securite')
+            },
+            { 
+              label: 'Sauvegardes',
+              icon: 'bi-cloud-arrow-up-fill',
+              path: '/Admin/Navigation/Sauvegardes',
+              onClick: () => navigate('/Admin/Navigation/Sauvegardes')
+            },
+            {
+              label: 'Historique de connexion',
+              icon: 'bi-clock-fill',
+              path: '/Admin/Navigation/HistoriqueConnexion',
+              onClick: () => navigate('/Admin/Navigation/HistoriqueConnexion')
+            },
           ]
         }
       ]
@@ -114,36 +176,71 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
           hasSubmenu: true,
           key: 'analyses',
           submenu: [
-            { label: 'Exports' }
+            {
+              label: 'Missions',
+              icon: 'bi-briefcase-fill',
+              path: '/Admin/Navigation/Missions',
+              onClick: () => navigate('/Admin/Navigation/Missions')
+            },
+            { 
+              label: 'Accidents',
+              icon: 'bi-cone-striped',
+              path: '/Admin/Navigation/Accidents',
+              onClick: () => navigate('/Admin/Navigation/Accidents')
+            },
+            { 
+              label: 'Rapports standards',
+              icon: 'bi-file-earmark-bar-graph-fill',
+              path: '/Admin/Navigation/RapportsStandards',
+              onClick: () => navigate('/Admin/Navigation/RapportsStandards')
+            }
           ]
         }
       ]
     },
     {
-      section: 'PERSONNALISATION',
+      section: 'CONFIGURATION',
       items: [
         { 
-          icon: 'bi-palette-fill', 
-          label: 'Thème',
-          path: '/Admin/Navigation/Theme',
-          onClick: () => navigate('/Admin/Navigation/Theme')
+          icon: 'bi-gear-fill', 
+          label: 'Configuration',
+          hasSubmenu: true,
+          key: 'configuration',
+          submenu: [
+            { 
+              label: 'Notifications',
+              icon: 'bi-bell-fill',
+              path: '/Admin/Configuration/Notifications',
+              onClick: () => navigate('/Admin/Configuration/Notifications')
+            },
+            { 
+              label: 'Paramètres',
+              icon: 'bi-gear-fill',
+              path: '/Admin/Configuration/Parametres',
+              onClick: () => navigate('/Admin/Configuration/Parametres')
+            },
+            {
+              icon: 'bi-palette-fill', 
+              label: 'Thème',
+              path: '/Admin/Navigation/Theme',
+              onClick: () => navigate('/Admin/Navigation/Theme')
+            }
+          ]
         }
       ]
     },
-    {
-      section: 'COMPTE',
-      items: [
-        { 
-          icon: 'bi-person-circle', 
-          label: 'Mon Profil',
-          path: '/Admin/Navigation/Profil'
-        }
-      ]
-    }
   ];
 
   return (
     <aside className={`${sidebarCollapsed ? 'w-20' : 'w-72'} ${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border-r transition-all duration-300 flex flex-col h-screen fixed left-0 top-0 z-40`}>
+
+      <style>{`
+        .swal-logout-popup { border-radius: 16px !important; }
+        .swal-logout-confirm { border-radius: 10px !important; font-weight: 600 !important; padding: 10px 24px !important; }
+        .swal-logout-cancel { border-radius: 10px !important; font-weight: 500 !important; padding: 10px 24px !important; color: ${darkMode ? '#d1d5db' : '#374151'} !important; }
+        .swal2-timer-progress-bar { background: #22c55e !important; }
+      `}</style>
+
       <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
         {!sidebarCollapsed && (
           <div className="flex items-center gap-3">
@@ -156,7 +253,7 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
             </div>
             <div>
               <h1 className={`font-bold text-base ${darkMode ? 'text-white' : 'text-gray-900'}`}>FLeetify Management</h1>
-              <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>GESTION DE PARCK AUTO</p>
+              <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>GESTION DE PARC AUTO</p>
             </div>
           </div>
         )}
@@ -184,19 +281,16 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
               </p>
             )}
             {section.items.map((item, itemIdx) => {
-              // ============================================================================
-              // VÉRIFIER SI CET ITEM EST ACTIF EN FONCTION DE L'URL
-              // ============================================================================
               const itemIsActive = isActive(item.path);
               
               return (
                 <div key={itemIdx}>
                   <button
                     onClick={() => {
-                      if (item.onClick) {
-                        item.onClick();
-                      } else if (item.hasSubmenu) {
+                      if (item.hasSubmenu) {
                         toggleMenu(item.key);
+                      } else if (item.onClick) {
+                        item.onClick();
                       }
                     }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1 transition-all ${
@@ -220,14 +314,31 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
                   </button>
                   {!sidebarCollapsed && item.hasSubmenu && openMenus[item.key] && (
                     <div className="ml-8 mt-1 space-y-1">
-                      {item.submenu.map((subitem, subIdx) => (
-                        <button 
-                          key={subIdx}
-                          className={`w-full text-left px-3 py-2 rounded text-sm ${darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-50'}`}
-                        >
-                          {subitem.label}
-                        </button>
-                      ))}
+                      {item.submenu.map((subitem, subIdx) => {
+                        const subitemIsActive = isActive(subitem.path);
+                        
+                        return (
+                          <button 
+                            key={subIdx}
+                            onClick={() => {
+                              if (subitem.onClick) subitem.onClick();
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded text-sm flex items-center gap-2 transition-all ${
+                              subitemIsActive
+                                ? 'text-white shadow-sm font-medium'
+                                : `${darkMode ? 'text-gray-400 hover:bg-gray-800 hover:text-gray-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`
+                            }`}
+                            style={subitemIsActive ? {
+                              background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
+                            } : {}}
+                          >
+                            {subitem.icon && (
+                              <i className={`${subitem.icon}`} style={{ fontSize: '0.95rem' }}></i>
+                            )}
+                            {subitem.label}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -237,41 +348,42 @@ const Sidebar = ({ darkMode, sidebarCollapsed, setSidebarCollapsed }) => {
         ))}
       </nav>
 
+      {/* ── Bas de la sidebar : avatar + déconnexion ── */}
       <div className={`p-4 border-t ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
         <div className={`flex items-center gap-3 mb-3 ${sidebarCollapsed ? 'justify-center' : ''}`}>
           <div 
             className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-            style={{
-              background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})`
-            }}
+            style={{ background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})` }}
           >
             HD
           </div>
           {!sidebarCollapsed && (
             <div className="flex-1">
-              <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Jean Dupont</p>
-              <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Super Admin</p>
+              <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Hulas DJYEMBI</p>
+              <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>administrateur</p>
             </div>
           )}
         </div>
+
+        {/* Bouton déconnexion — version étendue */}
         {!sidebarCollapsed && (
           <button 
+            onClick={handleLogout}
             className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white transition-all hover:opacity-90 hover:shadow-md"
-            style={{
-              background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
-            }}
+            style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})` }}
           >
             <i className="bi bi-box-arrow-right" style={{ fontSize: '1rem' }}></i>
             <span>Déconnexion</span>
           </button>
         )}
+
+        {/* Bouton déconnexion — version collapsed */}
         {sidebarCollapsed && (
           <button 
+            onClick={handleLogout}
             className="w-full flex items-center justify-center p-2 rounded-lg text-white transition-all hover:opacity-90 hover:shadow-md"
             title="Déconnexion"
-            style={{
-              background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
-            }}
+            style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})` }}
           >
             <i className="bi bi-box-arrow-right" style={{ fontSize: '1.25rem' }}></i>
           </button>

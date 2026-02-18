@@ -467,7 +467,7 @@ const FournisseursOutils = () => {
     } else if (quantite <= seuil) {
       return { 
         label: 'Stock faible', 
-        color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+        color: 'bg-orange-100 text-orange-700 dark:bg-orange-5000/30 dark:text-orange-800',
         icon: 'bi-exclamation-triangle-fill text-orange-500',
         badge: 'bg-orange-500'
       };
@@ -481,7 +481,7 @@ const FournisseursOutils = () => {
     } else {
       return { 
         label: 'Stock élevé', 
-        color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+        color: 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800',
         icon: 'bi-arrow-up-circle-fill text-green-500',
         badge: 'bg-green-500'
       };
@@ -1059,9 +1059,9 @@ const FournisseursOutils = () => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  item.type === 'pieces' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
-                  item.type === 'carburant' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
-                  item.type === 'assurance' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                  item.type === 'pieces' ? 'bg-purple-100 text-purple-700 dark:bg-purple-5000/30 dark:text-purple-800' :
+                  item.type === 'carburant' ? 'bg-orange-100 text-orange-700 dark:bg-orange-5000/30 dark:text-orange-800' :
+                  item.type === 'assurance' ? 'bg-blue-100 text-blue-700 dark:bg-blue-5000/30 dark:text-blue-800' :
                   'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
                 }`}>
                   {item.type}
@@ -1070,8 +1070,8 @@ const FournisseursOutils = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   item.est_actif
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800'
+                    : 'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
                 }`}>
                   {item.est_actif ? 'Actif' : 'Inactif'}
                 </span>
@@ -1144,9 +1144,9 @@ const FournisseursOutils = () => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  item.etat === 'OK' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                  item.etat === 'Maintenance' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                  'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                  item.etat === 'OK' ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800' :
+                  item.etat === 'Maintenance' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-5000/30 dark:text-yellow-800' :
+                  'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
                 }`}>
                   {item.etat}
                 </span>
@@ -1248,8 +1248,8 @@ const FournisseursOutils = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   item.est_actif
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800'
+                    : 'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
                 }`}>
                   {item.est_actif ? 'Actif' : 'Inactif'}
                 </span>

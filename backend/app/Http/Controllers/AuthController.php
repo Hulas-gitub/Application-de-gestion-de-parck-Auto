@@ -11,15 +11,20 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
+     * Durée de session fixe : 2 heures
+     */
+    private const SESSION_DURATION_HOURS = 2;
+    private const SESSION_DURATION_SECONDS = 2 * 60 * 60; // 7200 secondes
+
+    /**
      * Connexion utilisateur avec vérification complète
      */
     public function login(Request $request)
     {
-        // Validation avec messages personnalisés
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',
-            'remember_me' => 'boolean', // Nouveau champ
+            'remember_me' => 'boolean',
         ], [
             'email.required' => 'L\'adresse email est requise',
             'email.email' => 'L\'adresse email n\'est pas valide',
@@ -73,12 +78,11 @@ class AuthController extends Controller
                 ], 500);
             }
 
-            // 7. Déterminer la durée du token selon "Se souvenir de moi"
+            // 7. Session fixe de 2 heures
             $rememberMe = $request->boolean('remember_me', false);
-            $tokenExpiration = $rememberMe ? now()->addDays(30) : now()->addDays(7);
-            $expiresInSeconds = $rememberMe ? (30 * 24 * 60 * 60) : (7 * 24 * 60 * 60);
+            $tokenExpiration = now()->addHours(self::SESSION_DURATION_HOURS);
 
-            // 8. Créer le token Sanctum avec expiration personnalisée
+            // 8. Créer le token Sanctum avec expiration de 2 heures
             $token = $user->createToken('auth_token', ['*'], $tokenExpiration)->plainTextToken;
 
             // 9. Mettre à jour la dernière connexion
@@ -92,23 +96,21 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'est_actif' => $user->est_actif,
                 'derniere_connexion' => $user->derniere_connexion?->format('Y-m-d H:i:s'),
-                
-                // Informations du rôle
+
                 'role' => [
                     'id' => $user->role->id,
                     'code' => $user->role->code,
                     'libelle' => $user->role->libelle,
                     'description' => $user->role->description,
                 ],
-                
-                // Informations de la direction (si existe)
+
                 'direction' => $user->direction ? [
                     'id' => $user->direction->id,
                     'nom' => $user->direction->nom,
                     'code' => $user->direction->code,
                 ] : null,
-                
-                // Permissions basées sur le rôle
+
+                // ⏳ Permissions à remplir rôle par rôle au fur et à mesure du développement
                 'permissions' => $this->getPermissionsByRole($user->role->code),
             ];
 
@@ -123,14 +125,14 @@ class AuthController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
 
-            // 12. Retourner la réponse avec toutes les données
+            // 12. Retourner la réponse
             return response()->json([
                 'success' => true,
                 'message' => 'Connexion réussie',
                 'token' => $token,
                 'user' => $userData,
                 'token_type' => 'Bearer',
-                'expires_in' => $expiresInSeconds,
+                'expires_in' => self::SESSION_DURATION_SECONDS,
                 'remember_me' => $rememberMe,
                 'expires_at' => $tokenExpiration->format('Y-m-d H:i:s'),
             ], 200);
@@ -165,26 +167,38 @@ class AuthController extends Controller
                 ], 401);
             }
 
+            // Vérifier si le token a expiré (session de 2 heures dépassée)
+            $currentToken = $request->user()->currentAccessToken();
+            if ($currentToken && $currentToken->expires_at && now()->greaterThan($currentToken->expires_at)) {
+                $currentToken->delete();
+
+                return response()->json([
+                    'success' => false,
+                    'session_expired' => true,
+                    'message' => 'Votre session de 2 heures est écoulée. Veuillez vous reconnecter.'
+                ], 401);
+            }
+
             $userData = [
                 'id' => $user->id,
                 'nom' => $user->nom,
                 'email' => $user->email,
                 'est_actif' => $user->est_actif,
                 'derniere_connexion' => $user->derniere_connexion?->format('Y-m-d H:i:s'),
-                
+
                 'role' => [
                     'id' => $user->role->id,
                     'code' => $user->role->code,
                     'libelle' => $user->role->libelle,
                     'description' => $user->role->description,
                 ],
-                
+
                 'direction' => $user->direction ? [
                     'id' => $user->direction->id,
                     'nom' => $user->direction->nom,
                     'code' => $user->direction->code,
                 ] : null,
-                
+
                 'permissions' => $this->getPermissionsByRole($user->role->code),
             ];
 
@@ -210,13 +224,11 @@ class AuthController extends Controller
         try {
             $user = $request->user();
 
-            // Log de déconnexion
             \Log::info('Déconnexion', [
                 'user_id' => $user->id,
                 'email' => $user->email,
             ]);
 
-            // Supprimer tous les tokens de l'utilisateur
             $user->tokens()->delete();
 
             return response()->json([
@@ -234,25 +246,25 @@ class AuthController extends Controller
     }
 
     /**
-     * Rafraîchir le token
+     * Rafraîchir le token (repart sur une nouvelle session de 2 heures)
      */
     public function refresh(Request $request)
     {
         try {
             $user = $request->user()->load(['role', 'direction']);
 
-            // Supprimer l'ancien token
             $request->user()->currentAccessToken()->delete();
 
-            // Créer un nouveau token
-            $token = $user->createToken('auth_token', ['*'], now()->addDays(7))->plainTextToken;
+            $tokenExpiration = now()->addHours(self::SESSION_DURATION_HOURS);
+            $token = $user->createToken('auth_token', ['*'], $tokenExpiration)->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Token rafraîchi avec succès',
                 'token' => $token,
                 'token_type' => 'Bearer',
-                'expires_in' => 7 * 24 * 60 * 60,
+                'expires_in' => self::SESSION_DURATION_SECONDS,
+                'expires_at' => $tokenExpiration->format('Y-m-d H:i:s'),
             ], 200);
 
         } catch (\Exception $e) {
@@ -294,70 +306,71 @@ class AuthController extends Controller
         }
     }
 
-    
+    /**
+     * Vérifier si la session de 2 heures est toujours valide
+     */
+    public function checkSession(Request $request)
+    {
+        try {
+            $currentToken = $request->user()->currentAccessToken();
+
+            if (!$currentToken || !$currentToken->expires_at) {
+                return response()->json([
+                    'success' => false,
+                    'session_expired' => true,
+                    'message' => 'Votre session de 2 heures est écoulée. Veuillez vous reconnecter.'
+                ], 401);
+            }
+
+            $expiresAt = $currentToken->expires_at;
+            $now = now();
+
+            if ($now->greaterThan($expiresAt)) {
+                $currentToken->delete();
+
+                return response()->json([
+                    'success' => false,
+                    'session_expired' => true,
+                    'message' => 'Votre session de 2 heures est écoulée. Veuillez vous reconnecter.'
+                ], 401);
+            }
+
+            $remainingSeconds = $now->diffInSeconds($expiresAt);
+
+            return response()->json([
+                'success' => true,
+                'session_expired' => false,
+                'message' => 'Session active',
+                'expires_at' => $expiresAt->format('Y-m-d H:i:s'),
+                'remaining_seconds' => $remainingSeconds,
+                'remaining_minutes' => (int) ceil($remainingSeconds / 60),
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la vérification de la session',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
+    }
+
     /**
      * Obtenir les permissions selon le rôle
+     * ⏳ À compléter progressivement rôle par rôle au fur et à mesure du développement des pages
      */
     private function getPermissionsByRole(string $roleCode): array
     {
         $permissions = [
-            'admin' => [
-                'dashboard.view',
-                'users.view', 'users.create', 'users.edit', 'users.delete',
-                'vehicules.view', 'vehicules.create', 'vehicules.edit', 'vehicules.delete',
-                'missions.view', 'missions.create', 'missions.edit', 'missions.delete',
-                'interventions.view', 'interventions.create', 'interventions.edit', 'interventions.delete',
-                'anomalies.view', 'anomalies.create', 'anomalies.edit', 'anomalies.delete',
-                'accidents.view', 'accidents.create', 'accidents.edit', 'accidents.delete',
-                'stock.view', 'stock.create', 'stock.edit', 'stock.delete',
-                'documents.view', 'documents.create', 'documents.edit', 'documents.delete',
-                'rapports.view', 'rapports.create',
-                'settings.view', 'settings.edit',
-            ],
-            
-            'chef_parc' => [
-                'dashboard.view',
-                'vehicules.view', 'vehicules.create', 'vehicules.edit',
-                'missions.view', 'missions.create', 'missions.edit',
-                'interventions.view', 'interventions.create', 'interventions.edit',
-                'anomalies.view', 'anomalies.edit',
-                'accidents.view', 'accidents.edit',
-                'stock.view', 'stock.create', 'stock.edit',
-                'documents.view', 'documents.create',
-                'rapports.view', 'rapports.create',
-            ],
-            
-            'chef_tf' => [
-                'dashboard.view',
-                'missions.view', 'missions.create', 'missions.edit',
-                'vehicules.view',
-                'chauffeurs.view',
-                'anomalies.view',
-                'accidents.view',
-                'rapports.view',
-            ],
-            
-            'mecanicien' => [
-                'dashboard.view',
-                'interventions.view', 'interventions.edit',
-                'anomalies.view', 'anomalies.edit',
-                'vehicules.view',
-                'stock.view',
-            ],
-            
-            'agent_pc_radio' => [
-                'dashboard.view',
-                'pc_radio.view', 'pc_radio.create', 'pc_radio.edit',
-                'vehicules.view',
-                'chauffeurs.view',
-            ],
-            
-            'chauffeur' => [
-                'dashboard.view',
-                'missions.view',
-                'anomalies.view', 'anomalies.create',
-                'vehicules.view',
-            ],
+            // ✅ En cours de développement — à remplir une fois toutes les pages admin terminées
+            'admin' => [],
+
+            // 🔜 À faire après admin
+            'chef_parc' => [],
+            'chef_tf' => [],
+            'mecanicien' => [],
+            'agent_pc_radio' => [],
+            'chauffeur' => [],
         ];
 
         return $permissions[$roleCode] ?? [];

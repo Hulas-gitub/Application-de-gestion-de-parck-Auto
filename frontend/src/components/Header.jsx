@@ -1,8 +1,76 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import Swal from 'sweetalert2';
 
 const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, setShowNotifications, showProfile, setShowProfile }) => {
   const { theme } = useTheme();
+  const navigate = useNavigate();
+
+  // ── Déconnexion avec confirmation SweetAlert2 ──
+  const handleLogout = () => {
+    Swal.fire({
+      background: darkMode ? '#111827' : '#ffffff',
+      color: darkMode ? '#f1f5f9' : '#111827',
+      icon: 'question',
+      iconColor: theme.primary,
+      title: 'Déconnexion',
+      text: 'Êtes-vous sûr de vouloir vous déconnecter ?',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, me déconnecter',
+      cancelButtonText: 'Annuler',
+      confirmButtonColor: theme.primary,
+      cancelButtonColor: darkMode ? '#374151' : '#9ca3af',
+      customClass: {
+        popup: 'swal-logout-popup',
+        confirmButton: 'swal-logout-confirm',
+        cancelButton: 'swal-logout-cancel',
+      },
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('remember_me');
+        localStorage.removeItem('expires_at');
+
+        Swal.fire({
+          background: darkMode ? '#111827' : '#ffffff',
+          color: darkMode ? '#f1f5f9' : '#111827',
+          icon: 'success',
+          iconColor: '#22c55e',
+          title: 'À bientôt !',
+          text: 'Vous avez été déconnecté avec succès.',
+          timer: 1500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          customClass: { popup: 'swal-logout-popup' },
+        }).then(() => {
+          navigate('/');
+        });
+      }
+    });
+  };
+
+  // ── Horloge temps réel ──
+  const [now, setNow] = React.useState(new Date());
+  React.useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedDate = now.toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  const formattedTime = now.toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 
   const notifications = [
     { id: 1, type: 'warning', title: 'Maintenance requise', message: 'Véhicule AB-1234-GA nécessite une maintenance', time: 'Il y a 5 min', icon: 'bi-tools' },
@@ -11,25 +79,74 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
   ];
 
   return (
-    <header className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border-b px-6 py-4 flex items-center justify-between fixed top-0 right-0 left-0 z-30 transition-all duration-300`}
-      style={{ left: sidebarCollapsed ? '5rem' : '18rem' }}>
-      <div>
-        <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Interface d'administration</h2>
-        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Gestion du parc automobile</p>
+    <>
+      <style>{`
+        .swal-logout-popup { border-radius: 16px !important; }
+        .swal-logout-confirm { border-radius: 10px !important; font-weight: 600 !important; padding: 10px 24px !important; }
+        .swal-logout-cancel { border-radius: 10px !important; font-weight: 500 !important; padding: 10px 24px !important; }
+        .swal2-timer-progress-bar { background: #22c55e !important; }
+      `}</style>
+      <header
+      className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border-b px-6 py-4 flex items-center justify-between fixed top-0 right-0 left-0 z-30 transition-all duration-300`}
+      style={{ left: sidebarCollapsed ? '5rem' : '18rem' }}
+    >
+      {/* ── Espace gauche (équilibre) ── */}
+      <div className="flex-1"></div>
+
+      {/* ── Titre + Date/Heure — centré horizontalement, alignement vertical conservé ── */}
+      <div className="flex items-center gap-6">
+        <div className="text-center">
+          <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            Interface d'administration
+          </h2>
+          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            Gestion du parc automobile
+          </p>
+        </div>
+
+        {/* Séparateur vertical */}
+        <div className={`h-10 w-px ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
+
+        {/* Date et heure */}
+        <div className={`flex items-center gap-3 px-4 py-2 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+          {/* Date */}
+          <div className="flex items-center gap-2">
+            <i className="bi bi-calendar3 text-sm" style={{ color: theme.primary }}></i>
+            <span className={`text-sm font-medium capitalize ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              {formattedDate}
+            </span>
+          </div>
+
+          {/* Séparateur point */}
+          <span className={`${darkMode ? 'text-gray-600' : 'text-gray-300'}`}>•</span>
+
+          {/* Heure */}
+          <div className="flex items-center gap-2">
+            <i className="bi bi-clock-fill text-sm" style={{ color: theme.primary }}></i>
+            <span className={`text-sm font-bold tabular-nums ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              {formattedTime}
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-       
+      {/* ── Actions droite ── */}
+      <div className="flex items-center gap-4 flex-1 justify-end">
 
-        <button 
+        {/* Toggle dark/light */}
+        <button
           onClick={() => setDarkMode(!darkMode)}
           className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-gray-100 text-gray-700'} hover:scale-110 transition-transform`}
         >
-          {darkMode ? <i className="bi bi-sun-fill text-xl"></i> : <i className="bi bi-moon-fill text-xl"></i>}
+          {darkMode
+            ? <i className="bi bi-sun-fill text-xl"></i>
+            : <i className="bi bi-moon-fill text-xl"></i>
+          }
         </button>
 
+        {/* Notifications */}
         <div className="relative">
-          <button 
+          <button
             onClick={() => {
               setShowNotifications(!showNotifications);
               setShowProfile(false);
@@ -49,7 +166,7 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
               </div>
               <div className="max-h-96 overflow-y-auto">
                 {notifications.map((notif) => (
-                  <div 
+                  <div
                     key={notif.id}
                     className={`p-4 border-b ${darkMode ? 'border-gray-700 hover:bg-gray-750' : 'border-gray-200 hover:bg-gray-50'} cursor-pointer transition-colors`}
                   >
@@ -79,16 +196,15 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
           )}
         </div>
 
+        {/* Profil */}
         <div className="relative">
-          <div 
+          <div
             onClick={() => {
               setShowProfile(!showProfile);
               setShowNotifications(false);
             }}
             className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold cursor-pointer hover:scale-110 transition-transform shadow-lg"
-            style={{
-              background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})`
-            }}
+            style={{ background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})` }}
           >
             HD
           </div>
@@ -97,11 +213,9 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
             <div className={`absolute right-0 mt-2 w-64 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-200`}>
               <div className={`p-4 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                 <div className="flex items-center gap-3">
-                  <div 
+                  <div
                     className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
-                    style={{
-                      background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})`
-                    }}
+                    style={{ background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryDark})` }}
                   >
                     HD
                   </div>
@@ -112,22 +226,26 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
                 </div>
               </div>
               <div className="p-2">
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'} transition-colors`}>
+                <button
+                  onClick={() => { navigate('/Profils/MonProfil'); setShowProfile(false); }}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'} transition-colors`}
+                >
                   <i className="bi bi-person-circle text-lg"></i>
                   <span className="text-sm">Mon Profil</span>
                 </button>
-                <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'} transition-colors`}>
+                <button
+                  onClick={() => { navigate('/Admin/Configuration/Parametres'); setShowProfile(false); }}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'} transition-colors`}
+                >
                   <i className="bi bi-gear-fill text-lg"></i>
                   <span className="text-sm">Paramètres</span>
                 </button>
-          
               </div>
               <div className={`p-2 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                <button 
+                <button
+                  onClick={() => { setShowProfile(false); handleLogout(); }}
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
-                  style={{
-                    background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
-                  }}
+                  style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})` }}
                 >
                   <i className="bi bi-box-arrow-right text-lg"></i>
                   <span>Déconnexion</span>
@@ -138,6 +256,7 @@ const Header = ({ darkMode, setDarkMode, sidebarCollapsed, showNotifications, se
         </div>
       </div>
     </header>
+    </>
   );
 };
 

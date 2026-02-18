@@ -8,6 +8,8 @@ import Vehicules from './Admin/Navigation/Vehicules';
 import Interventions from './Admin/Navigation/Interventions';
 import FournisseursOutils from './Admin/Navigation/FournisseursOutils';
 import InspectionVehicules from './Admin/Navigation/InspectionVehicules';
+import Chauffeurs from './Admin/Navigation/Chauffeurs';
+import MonProfil from './Profils/MonProfil';
 // Composant pour protéger les routes
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -41,7 +43,14 @@ function App() {
           />
           
           {/* Routes protégées - Navigation */}
-          
+            <Route  path="/Profils/Monprofil"
+            element={
+              <ProtectedRoute>
+                <MonProfil/>
+              </ProtectedRoute>
+            } 
+          />
+
           {/* Route protégée - Gestion des Utilisateurs */}
           <Route 
             path="/Admin/Navigation/Utilisateurs"
@@ -89,6 +98,17 @@ function App() {
               </ProtectedRoute>
             } 
           />
+
+  {/* Route protégée - Gestion des Fournisseurs-Outils */}
+          <Route 
+            path="/Admin/Navigation/Chauffeurs"
+            element={
+              <ProtectedRoute>
+                <Chauffeurs/>
+              </ProtectedRoute>
+            } 
+          />
+
           {/* Route protégée - Gestion des Thèmes */}
           <Route 
             path="/Admin/Navigation/Theme"
@@ -98,7 +118,7 @@ function App() {
               </ProtectedRoute>
             } 
           />
-          
+         
           {/* Route 404 */}
           <Route 
             path="*" 

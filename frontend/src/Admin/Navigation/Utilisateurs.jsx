@@ -982,7 +982,7 @@ const FormModal = ({ show, onClose, title, onSubmit, type, initialData }) => {
                     <p className="mt-1">
                       <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
                         item.statut === 'Actif' 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-5000/30 dark:text-green-800'
                           : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                       }`}>
                         {item.statut}
@@ -1066,8 +1066,8 @@ const FormModal = ({ show, onClose, title, onSubmit, type, initialData }) => {
                       <p className="mt-1">
                         <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
                           item.estActif 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-5000/30 dark:text-green-800'
+                            : 'bg-red-100 text-red-800 dark:bg-red-5000/30 dark:text-red-800'
                         }`}>
                           {item.estActif ? 'Actif' : 'Inactif'}
                         </span>
@@ -1126,8 +1126,8 @@ const FormModal = ({ show, onClose, title, onSubmit, type, initialData }) => {
                       <p className="mt-1">
                         <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
                           item.estActif 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-5000/30 dark:text-green-800'
+                            : 'bg-red-100 text-red-800 dark:bg-red-5000/30 dark:text-red-800'
                         }`}>
                           {item.estActif ? 'Actif' : 'Inactif'}
                         </span>
@@ -1230,9 +1230,9 @@ const FormModal = ({ show, onClose, title, onSubmit, type, initialData }) => {
           value: rolesData.length.toString(), 
           subtitle: 'rôles créés',
           icon: 'bi-shield-fill',
-          bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+          bgColor: 'bg-blue-50 dark:bg-blue-5000/20',
           iconBg: 'bg-blue-100 dark:bg-blue-800',
-          textColor: 'text-blue-600 dark:text-blue-400'
+          textColor: 'text-blue-600 dark:text-blue-800'
         },
         { 
           title: 'Rôles Actifs', 
@@ -1428,678 +1428,724 @@ const FormModal = ({ show, onClose, title, onSubmit, type, initialData }) => {
             </div>
           ))}
         </div>
+{activeTab === 'utilisateurs' && (
+  <div className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'} rounded-xl border shadow-sm overflow-hidden`}>
+    <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            Liste des Utilisateurs
+          </h3>
+          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            {filteredUsers.length} utilisateur{filteredUsers.length > 1 ? 's' : ''} trouvé{filteredUsers.length > 1 ? 's' : ''}
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <i className={`bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}></i>
+            <input 
+              type="text"
+              placeholder="Rechercher..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={`pl-10 pr-4 py-2 rounded-lg border ${
+                darkMode 
+                  ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400' 
+                  : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
+              } focus:outline-none focus:ring-2 w-64`}
+              style={{ '--tw-ring-color': theme.primary }}
+            />
+          </div>
 
-        {/* TABLEAU UTILISATEURS */}
-        {activeTab === 'utilisateurs' && (
-          <div className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'} rounded-xl border shadow-sm overflow-hidden`}>
-            <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div>
-                  <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    Liste des Utilisateurs
-                  </h3>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {filteredUsers.length} utilisateur{filteredUsers.length > 1 ? 's' : ''} trouvé{filteredUsers.length > 1 ? 's' : ''}
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <i className={`bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}></i>
-                    <input 
-                      type="text"
-                      placeholder="Rechercher..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className={`pl-10 pr-4 py-2 rounded-lg border ${
-                        darkMode 
-                          ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400' 
-                          : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
-                      } focus:outline-none focus:ring-2 w-64`}
-                      style={{ '--tw-ring-color': theme.primary }}
-                    />
-                  </div>
+          <div className="relative">
+            <button
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+                darkMode 
+                  ? 'bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-750' 
+                  : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+              } transition-colors`}
+            >
+              <i className="bi bi-funnel"></i>
+              <span className="text-sm font-medium">Filtres</span>
+            </button>
 
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowFilterMenu(!showFilterMenu)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
-                        darkMode 
-                          ? 'bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-750' 
-                          : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
-                      } transition-colors`}
-                    >
-                      <i className="bi bi-funnel"></i>
-                      <span className="text-sm font-medium">Filtres</span>
-                    </button>
-
-                    {showFilterMenu && (
-                      <div className={`absolute right-0 mt-2 w-64 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50 p-4`}>
-                        <div className="mb-4">
-                          <label className={`text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-2 block`}>
-                            Rôle
-                          </label>
-                          <select
-                            value={roleFilter}
-                            onChange={(e) => setRoleFilter(e.target.value)}
-                            className={`w-full px-3 py-2 rounded-lg border ${
-                              darkMode 
-                                ? 'bg-gray-900 border-gray-700 text-white' 
-                                : 'bg-gray-50 border-gray-200 text-gray-900'
-                            } text-sm`}
-                          >
-                            {uniqueRoles.map((role, idx) => (
-                              <option key={idx} value={role}>{role}</option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className={`text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-2 block`}>
-                            Statut
-                          </label>
-                          <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className={`w-full px-3 py-2 rounded-lg border ${
-                              darkMode 
-                                ? 'bg-gray-900 border-gray-700 text-white' 
-                                : 'bg-gray-50 border-gray-200 text-gray-900'
-                            } text-sm`}
-                          >
-                            <option value="Tous">Tous</option>
-                            <option value="Actif">Actif</option>
-                            <option value="Bloqué">Bloqué</option>
-                          </select>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <button
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+            {showFilterMenu && (
+              <div className={`absolute right-0 mt-2 w-64 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50 p-4`}>
+                <div className="mb-4">
+                  <label className={`text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-2 block`}>
+                    Rôle
+                  </label>
+                  <select
+                    value={roleFilter}
+                    onChange={(e) => setRoleFilter(e.target.value)}
+                    className={`w-full px-3 py-2 rounded-lg border ${
                       darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-750' 
-                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
-                    } transition-colors`}
+                        ? 'bg-gray-900 border-gray-700 text-white' 
+                        : 'bg-gray-50 border-gray-200 text-gray-900'
+                    } text-sm`}
                   >
-                    <i className="bi bi-download"></i>
-                    <span className="text-sm font-medium">Exporter</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setFormData({});
-                      setCurrentItem(null);
-                      setShowAddModal(true);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90 shadow-md hover:shadow-lg"
-                    style={{
-                      background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
-                    }}
+                    {uniqueRoles.map((role, idx) => (
+                      <option key={idx} value={role}>{role}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={`text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-2 block`}>
+                    Statut
+                  </label>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className={`w-full px-3 py-2 rounded-lg border ${
+                      darkMode 
+                        ? 'bg-gray-900 border-gray-700 text-white' 
+                        : 'bg-gray-50 border-gray-200 text-gray-900'
+                    } text-sm`}
                   >
-                    <i className="bi bi-plus-lg"></i>
-                    <span>Ajouter</span>
-                  </button>
+                    <option value="Tous">Tous</option>
+                    <option value="Actif">Actif</option>
+                    <option value="Bloqué">Bloqué</option>
+                  </select>
                 </div>
               </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-                  <tr>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Utilisateur
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Contact
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Rôle
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Direction
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Statut
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className={`divide-y ${darkMode ? 'divide-gray-800' : 'divide-gray-100'}`}>
-                  {filteredUsers.map((user) => (
-                    <tr 
-                      key={user.id}
-                      className={`${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'} transition-colors`}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-3">
-                          <div 
-                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                            style={{ backgroundColor: user.couleur }}
-                          >
-                            {user.initiales}
-                          </div>
-                          <div>
-                            <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {user.prenom} {user.nom}
-                            </p>
-                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                              {user.dernierConnexion}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {user.email}
-                        </p>
-                        <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-                          {user.telephone}
-                        </p>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                          user.roleName === 'Super Administrateur' 
-                            ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                            : user.roleName.includes('Chef')
-                            ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                        }`}>
-                          {user.roleName}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {user.directionName}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                          user.statut === 'Actif' 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                        }`}>
-                          {user.statut}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="relative">
-                          <button
-                            onClick={() => setShowActionMenu(showActionMenu === user.id ? null : user.id)}
-                            className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-                          >
-                            <i className={`bi bi-three-dots-vertical ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}></i>
-                          </button>
-
-                          {showActionMenu === user.id && (
-                            <div className={`absolute right-0 mt-2 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50`}>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(user);
-                                  setShowDetailsModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-eye-fill text-blue-500"></i>
-                                <span>Voir détails</span>
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(user);
-                                  setFormData({
-                                    nom: user.nom,
-                                    prenom: user.prenom,
-                                    email: user.email,
-                                    telephone: user.telephone,
-                                    roleId: user.roleId,
-                                    directionId: user.directionId
-                                  });
-                                  setShowEditModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-pencil-fill text-yellow-500"></i>
-                                <span>Modifier</span>
-                              </button>
-                              <button
-                                onClick={() => handleToggleUserStatus(user)}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className={`bi ${user.statut === 'Actif' ? 'bi-lock-fill text-orange-500' : 'bi-unlock-fill text-green-500'}`}></i>
-                                <span>{user.statut === 'Actif' ? 'Bloquer' : 'Débloquer'}</span>
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(user);
-                                  setShowDeleteModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-600 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-trash-fill"></i>
-                                <span>Supprimer</span>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className={`px-6 py-4 border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-              <div className="flex items-center justify-between">
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  Affichage de {filteredUsers.length} utilisateurs
-                </p>
-              </div>
-            </div>
+            )}
           </div>
-        )}
 
-        {/* TABLEAU RÔLES */}
-        {activeTab === 'roles' && (
-          <div className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'} rounded-xl border shadow-sm overflow-hidden`}>
-            <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-              <div className="flex items-center justify-between flex-wrap gap-4">
+          <button
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+              darkMode 
+                ? 'bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-750' 
+                : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+            } transition-colors`}
+          >
+            <i className="bi bi-download"></i>
+            <span className="text-sm font-medium">Exporter</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setFormData({});
+              setCurrentItem(null);
+              setShowAddModal(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90 shadow-md hover:shadow-lg"
+            style={{
+              background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
+            }}
+          >
+            <i className="bi bi-plus-lg"></i>
+            <span>Ajouter</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div className="overflow-x-auto">
+      <table className="w-full">
+
+        {/* ✅ THEAD — vraie couleur du thème actif */}
+        <thead
+          style={{
+            background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`,
+          }}
+        >
+          <tr>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Utilisateur
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Contact
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Rôle
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Direction
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Statut
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        {/* ✅ TBODY — lignes alternées : bleu pastel / gris pastel */}
+        <tbody>
+          {filteredUsers.map((user, index) => (
+            <tr
+              key={user.id}
+              style={{
+                backgroundColor: index % 2 === 0
+                  ? darkMode ? '#1a2535' : '#eef2ff'
+                  : darkMode ? '#1c1f2b' : '#f3f4f6',
+                borderBottom: darkMode ? '1px solid #1e293b' : '1px solid #e5e7eb',
+                transition: 'background-color 0.15s ease'
+              }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = darkMode ? `${theme.primary}30` : `${theme.primary}18`}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = index % 2 === 0
+                ? darkMode ? '#1a2535' : '#eef2ff'
+                : darkMode ? '#1c1f2b' : '#f3f4f6'
+              }
+            >
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                    style={{ backgroundColor: user.couleur }}
+                  >
+                    {user.initiales}
+                  </div>
+                  <div>
+                    <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {user.prenom} {user.nom}
+                    </p>
+                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {user.dernierConnexion}
+                    </p>
+                  </div>
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {user.email}
+                </p>
+                <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+                  {user.telephone}
+                </p>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                  user.roleName === 'Super Administrateur' 
+                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-5000/30 dark:text-yellow-800'
+                    : user.roleName.includes('Chef')
+                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-5000/30 dark:text-purple-800'
+                    : 'bg-blue-100 text-blue-800 dark:bg-blue-5000/30 dark:text-blue-800'
+                }`}>
+                  {user.roleName}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {user.directionName}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                  user.statut === 'Actif' 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-5000/30 dark:text-green-800'
+                    : 'bg-red-100 text-red-800 dark:bg-red-5000/30 dark:text-red-800'
+                }`}>
+                  {user.statut}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="relative">
+                  <button
+                    onClick={() => setShowActionMenu(showActionMenu === user.id ? null : user.id)}
+                    className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+                  >
+                    <i className={`bi bi-three-dots-vertical ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}></i>
+                  </button>
+
+                  {showActionMenu === user.id && (
+                    <div className={`absolute right-0 mt-2 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50`}>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(user);
+                          setShowDetailsModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-eye-fill text-blue-500"></i>
+                        <span>Voir détails</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(user);
+                          setFormData({
+                            nom: user.nom,
+                            prenom: user.prenom,
+                            email: user.email,
+                            telephone: user.telephone,
+                            roleId: user.roleId,
+                            directionId: user.directionId
+                          });
+                          setShowEditModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-pencil-fill text-yellow-500"></i>
+                        <span>Modifier</span>
+                      </button>
+                      <button
+                        onClick={() => handleToggleUserStatus(user)}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className={`bi ${user.statut === 'Actif' ? 'bi-lock-fill text-orange-500' : 'bi-unlock-fill text-green-500'}`}></i>
+                        <span>{user.statut === 'Actif' ? 'Bloquer' : 'Débloquer'}</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(user);
+                          setShowDeleteModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-600 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-trash-fill"></i>
+                        <span>Supprimer</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div className={`px-6 py-4 border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        Affichage de {filteredUsers.length} utilisateurs
+      </p>
+    </div>
+  </div>
+)}
+       {activeTab === 'roles' && (
+  <div className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'} rounded-xl border shadow-sm overflow-hidden`}>
+    <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            Liste des Rôles
+          </h3>
+          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            {filteredRoles.length} rôle{filteredRoles.length > 1 ? 's' : ''} trouvé{filteredRoles.length > 1 ? 's' : ''}
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <i className={`bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}></i>
+            <input 
+              type="text"
+              placeholder="Rechercher..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={`pl-10 pr-4 py-2 rounded-lg border ${
+                darkMode 
+                  ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400' 
+                  : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
+              } focus:outline-none focus:ring-2 w-64`}
+              style={{ '--tw-ring-color': theme.primary }}
+            />
+          </div>
+
+          <button
+            onClick={() => {
+              setFormData({});
+              setCurrentItem(null);
+              setShowAddModal(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90 shadow-md hover:shadow-lg"
+            style={{
+              background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
+            }}
+          >
+            <i className="bi bi-plus-lg"></i>
+            <span>Ajouter</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div className="overflow-x-auto">
+      <table className="w-full">
+
+        {/* ✅ THEAD — vraie couleur du thème actif */}
+        <thead
+          style={{
+            background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`,
+          }}
+        >
+          <tr>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Rôle
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Description
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Niveau d'accès
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Utilisateurs
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Statut
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        {/* ✅ TBODY — lignes alternées : bleu pastel / gris pastel */}
+        <tbody>
+          {filteredRoles.map((role, index) => (
+            <tr
+              key={role.id}
+              style={{
+                backgroundColor: index % 2 === 0
+                  ? darkMode ? '#1a2535' : '#eef2ff'
+                  : darkMode ? '#1c1f2b' : '#f3f4f6',
+                borderBottom: darkMode ? '1px solid #1e293b' : '1px solid #e5e7eb',
+                transition: 'background-color 0.15s ease'
+              }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = darkMode ? `${theme.primary}30` : `${theme.primary}18`}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = index % 2 === 0
+                ? darkMode ? '#1a2535' : '#eef2ff'
+                : darkMode ? '#1c1f2b' : '#f3f4f6'
+              }
+            >
+              <td className="px-6 py-4 whitespace-nowrap">
                 <div>
-                  <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    Liste des Rôles
-                  </h3>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {filteredRoles.length} rôle{filteredRoles.length > 1 ? 's' : ''} trouvé{filteredRoles.length > 1 ? 's' : ''}
+                  <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {role.nom}
+                  </p>
+                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {role.code}
                   </p>
                 </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <i className={`bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}></i>
-                    <input 
-                      type="text"
-                      placeholder="Rechercher..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className={`pl-10 pr-4 py-2 rounded-lg border ${
-                        darkMode 
-                          ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400' 
-                          : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
-                      } focus:outline-none focus:ring-2 w-64`}
-                      style={{ '--tw-ring-color': theme.primary }}
-                    />
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setFormData({});
-                      setCurrentItem(null);
-                      setShowAddModal(true);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90 shadow-md hover:shadow-lg"
-                    style={{
-                      background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
-                    }}
-                  >
-                    <i className="bi bi-plus-lg"></i>
-                    <span>Ajouter</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-                  <tr>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Rôle
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Description
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Niveau d'accès
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Utilisateurs
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Statut
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className={`divide-y ${darkMode ? 'divide-gray-800' : 'divide-gray-100'}`}>
-                  {filteredRoles.map((role) => (
-                    <tr 
-                      key={role.id}
-                      className={`${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'} transition-colors`}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {role.nom}
-                          </p>
-                          <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {role.code}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {role.description}
-                        </p>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                          role.niveauAcces === 'Complet' 
-                            ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-                            : role.niveauAcces === 'Élevé'
-                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                            : role.niveauAcces === 'Moyen'
-                            ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                            : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
-                        }`}>
-                          {role.niveauAcces}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                          {role.nbUtilisateurs}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                          role.estActif 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                        }`}>
-                          {role.estActif ? 'Actif' : 'Inactif'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="relative">
-                          <button
-                            onClick={() => setShowActionMenu(showActionMenu === `role-${role.id}` ? null : `role-${role.id}`)}
-                            className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-                          >
-                            <i className={`bi bi-three-dots-vertical ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}></i>
-                          </button>
-
-                          {showActionMenu === `role-${role.id}` && (
-                            <div className={`absolute right-0 mt-2 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50`}>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(role);
-                                  setShowDetailsModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-eye-fill text-blue-500"></i>
-                                <span>Voir détails</span>
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(role);
-                                  setFormData({
-                                    code: role.code,
-                                    nom: role.nom,
-                                    description: role.description,
-                                    niveauAcces: role.niveauAcces,
-                                    permissions: role.permissions.join(', ')
-                                  });
-                                  setShowEditModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-pencil-fill text-yellow-500"></i>
-                                <span>Modifier</span>
-                              </button>
-                              <button
-                                onClick={() => handleToggleRoleStatus(role)}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className={`bi ${role.estActif ? 'bi-toggle-on text-green-500' : 'bi-toggle-off text-gray-500'}`}></i>
-                                <span>{role.estActif ? 'Désactiver' : 'Activer'}</span>
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(role);
-                                  setShowDeleteModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-600 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-trash-fill"></i>
-                                <span>Supprimer</span>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className={`px-6 py-4 border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-              <div className="flex items-center justify-between">
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  Affichage de {filteredRoles.length} rôles
+              </td>
+              <td className="px-6 py-4">
+                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {role.description}
                 </p>
-              </div>
-            </div>
-          </div>
-        )}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                  role.niveauAcces === 'Complet' 
+                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                    : role.niveauAcces === 'Élevé'
+                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                    : role.niveauAcces === 'Moyen'
+                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                    : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                }`}>
+                  {role.niveauAcces}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  {role.nbUtilisateurs}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                  role.estActif 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                }`}>
+                  {role.estActif ? 'Actif' : 'Inactif'}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="relative">
+                  <button
+                    onClick={() => setShowActionMenu(showActionMenu === `role-${role.id}` ? null : `role-${role.id}`)}
+                    className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+                  >
+                    <i className={`bi bi-three-dots-vertical ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}></i>
+                  </button>
 
-        {/* TABLEAU DIRECTIONS */}
-        {activeTab === 'directions' && (
-          <div className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'} rounded-xl border shadow-sm overflow-hidden`}>
-            <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-              <div className="flex items-center justify-between flex-wrap gap-4">
+                  {showActionMenu === `role-${role.id}` && (
+                    <div className={`absolute right-0 mt-2 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50`}>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(role);
+                          setShowDetailsModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-eye-fill text-blue-500"></i>
+                        <span>Voir détails</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(role);
+                          setFormData({
+                            code: role.code,
+                            nom: role.nom,
+                            description: role.description,
+                            niveauAcces: role.niveauAcces,
+                            permissions: role.permissions.join(', ')
+                          });
+                          setShowEditModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-pencil-fill text-yellow-500"></i>
+                        <span>Modifier</span>
+                      </button>
+                      <button
+                        onClick={() => handleToggleRoleStatus(role)}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className={`bi ${role.estActif ? 'bi-toggle-on text-green-500' : 'bi-toggle-off text-gray-500'}`}></i>
+                        <span>{role.estActif ? 'Désactiver' : 'Activer'}</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(role);
+                          setShowDeleteModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-600 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-trash-fill"></i>
+                        <span>Supprimer</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div className={`px-6 py-4 border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        Affichage de {filteredRoles.length} rôles
+      </p>
+    </div>
+  </div>
+)}
+
+    {activeTab === 'directions' && (
+  <div className={`${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'} rounded-xl border shadow-sm overflow-hidden`}>
+    <div className={`p-6 border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            Liste des Directions
+          </h3>
+          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            {filteredDirections.length} direction{filteredDirections.length > 1 ? 's' : ''} trouvée{filteredDirections.length > 1 ? 's' : ''}
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <i className={`bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}></i>
+            <input 
+              type="text"
+              placeholder="Rechercher..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={`pl-10 pr-4 py-2 rounded-lg border ${
+                darkMode 
+                  ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400' 
+                  : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
+              } focus:outline-none focus:ring-2 w-64`}
+              style={{ '--tw-ring-color': theme.primary }}
+            />
+          </div>
+
+          <button
+            onClick={() => {
+              setFormData({});
+              setCurrentItem(null);
+              setShowAddModal(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90 shadow-md hover:shadow-lg"
+            style={{
+              background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
+            }}
+          >
+            <i className="bi bi-plus-lg"></i>
+            <span>Ajouter</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div className="overflow-x-auto">
+      <table className="w-full">
+
+        {/* ✅ THEAD — vraie couleur du thème actif */}
+        <thead
+          style={{
+            background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`,
+          }}
+        >
+          <tr>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Direction
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Description
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Responsable
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Véhicules
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Utilisateurs
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Statut
+            </th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        {/* ✅ TBODY — lignes alternées : bleu pastel / gris pastel */}
+        <tbody>
+          {filteredDirections.map((dir, index) => (
+            <tr
+              key={dir.id}
+              style={{
+                backgroundColor: index % 2 === 0
+                  ? darkMode ? '#1a2535' : '#eef2ff'
+                  : darkMode ? '#1c1f2b' : '#f3f4f6',
+                borderBottom: darkMode ? '1px solid #1e293b' : '1px solid #e5e7eb',
+                transition: 'background-color 0.15s ease'
+              }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = darkMode ? `${theme.primary}30` : `${theme.primary}18`}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = index % 2 === 0
+                ? darkMode ? '#1a2535' : '#eef2ff'
+                : darkMode ? '#1c1f2b' : '#f3f4f6'
+              }
+            >
+              <td className="px-6 py-4 whitespace-nowrap">
                 <div>
-                  <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    Liste des Directions
-                  </h3>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {filteredDirections.length} direction{filteredDirections.length > 1 ? 's' : ''} trouvée{filteredDirections.length > 1 ? 's' : ''}
+                  <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {dir.nom}
+                  </p>
+                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Code: {dir.code}
                   </p>
                 </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <i className={`bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}></i>
-                    <input 
-                      type="text"
-                      placeholder="Rechercher..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className={`pl-10 pr-4 py-2 rounded-lg border ${
-                        darkMode 
-                          ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400' 
-                          : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
-                      } focus:outline-none focus:ring-2 w-64`}
-                      style={{ '--tw-ring-color': theme.primary }}
-                    />
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setFormData({});
-                      setCurrentItem(null);
-                      setShowAddModal(true);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90 shadow-md hover:shadow-lg"
-                    style={{
-                      background: `linear-gradient(to right, ${theme.primary}, ${theme.primaryDark})`
-                    }}
-                  >
-                    <i className="bi bi-plus-lg"></i>
-                    <span>Ajouter</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-                  <tr>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Direction
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Description
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Responsable
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Véhicules
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Utilisateurs
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Statut
-                    </th>
-                    <th className={`px-6 py-4 text-left text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider`}>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className={`divide-y ${darkMode ? 'divide-gray-800' : 'divide-gray-100'}`}>
-                  {filteredDirections.map((dir) => (
-                    <tr 
-                      key={dir.id}
-                      className={`${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'} transition-colors`}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {dir.nom}
-                          </p>
-                          <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Code: {dir.code}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {dir.description}
-                        </p>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {dir.responsable}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                          {dir.nbVehicules}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                          {dir.nbUtilisateurs}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                          dir.estActif 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                        }`}>
-                          {dir.estActif ? 'Actif' : 'Inactif'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="relative">
-                          <button
-                            onClick={() => setShowActionMenu(showActionMenu === `dir-${dir.id}` ? null : `dir-${dir.id}`)}
-                            className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-                          >
-                            <i className={`bi bi-three-dots-vertical ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}></i>
-                          </button>
-
-                          {showActionMenu === `dir-${dir.id}` && (
-                            <div className={`absolute right-0 mt-2 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50`}>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(dir);
-                                  setShowDetailsModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-eye-fill text-blue-500"></i>
-                                <span>Voir détails</span>
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(dir);
-                                  setFormData({
-                                    code: dir.code,
-                                    nom: dir.nom,
-                                    description: dir.description,
-                                    responsable: dir.responsable
-                                  });
-                                  setShowEditModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-pencil-fill text-yellow-500"></i>
-                                <span>Modifier</span>
-                              </button>
-                              <button
-                                onClick={() => handleToggleDirectionStatus(dir)}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className={`bi ${dir.estActif ? 'bi-toggle-on text-green-500' : 'bi-toggle-off text-gray-500'}`}></i>
-                                <span>{dir.estActif ? 'Désactiver' : 'Activer'}</span>
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setCurrentItem(dir);
-                                  setShowDeleteModal(true);
-                                  setShowActionMenu(null);
-                                }}
-                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-600 hover:bg-gray-50'} transition-colors`}
-                              >
-                                <i className="bi bi-trash-fill"></i>
-                                <span>Supprimer</span>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className={`px-6 py-4 border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-              <div className="flex items-center justify-between">
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  Affichage de {filteredDirections.length} directions
+              </td>
+              <td className="px-6 py-4">
+                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {dir.description}
                 </p>
-              </div>
-            </div>
-          </div>
-        )}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {dir.responsable}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  {dir.nbVehicules}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  {dir.nbUtilisateurs}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                  dir.estActif 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                }`}>
+                  {dir.estActif ? 'Actif' : 'Inactif'}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="relative">
+                  <button
+                    onClick={() => setShowActionMenu(showActionMenu === `dir-${dir.id}` ? null : `dir-${dir.id}`)}
+                    className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+                  >
+                    <i className={`bi bi-three-dots-vertical ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}></i>
+                  </button>
+
+                  {showActionMenu === `dir-${dir.id}` && (
+                    <div className={`absolute right-0 mt-2 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-xl z-50`}>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(dir);
+                          setShowDetailsModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-eye-fill text-blue-500"></i>
+                        <span>Voir détails</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(dir);
+                          setFormData({
+                            code: dir.code,
+                            nom: dir.nom,
+                            description: dir.description,
+                            responsable: dir.responsable
+                          });
+                          setShowEditModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-pencil-fill text-yellow-500"></i>
+                        <span>Modifier</span>
+                      </button>
+                      <button
+                        onClick={() => handleToggleDirectionStatus(dir)}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className={`bi ${dir.estActif ? 'bi-toggle-on text-green-500' : 'bi-toggle-off text-gray-500'}`}></i>
+                        <span>{dir.estActif ? 'Désactiver' : 'Activer'}</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrentItem(dir);
+                          setShowDeleteModal(true);
+                          setShowActionMenu(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2 text-sm ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-600 hover:bg-gray-50'} transition-colors`}
+                      >
+                        <i className="bi bi-trash-fill"></i>
+                        <span>Supprimer</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div className={`px-6 py-4 border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        Affichage de {filteredDirections.length} directions
+      </p>
+    </div>
+  </div>
+)}
 
         {/* Footer */}
         <div className={`mt-8 py-6 border-t ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>

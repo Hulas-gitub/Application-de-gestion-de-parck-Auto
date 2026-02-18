@@ -829,10 +829,10 @@ const InspectionVehicules = () => {
           <td className="px-6 py-4 whitespace-nowrap">
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
               item.statut_global === 'conforme'
-                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800'
                 : item.statut_global === 'non_conforme'
-                ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
-                : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                ? 'bg-orange-100 text-orange-700 dark:bg-orange-5000/30 dark:text-orange-800'
+                : 'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
             }`}>
               {item.statut_global === 'conforme' ? 'Conforme' : 
                item.statut_global === 'non_conforme' ? 'Non conforme' : 
@@ -918,14 +918,14 @@ const InspectionVehicules = () => {
           <td className="px-6 py-4 whitespace-nowrap">
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
               item.statut === 'OK'
-                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                ? 'bg-green-100 text-green-700 dark:bg-green-5000/30 dark:text-green-800'
                 : item.statut === 'NOK'
-                ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+                ? 'bg-orange-100 text-orange-700 dark:bg-orange-5000/30 dark:text-orange-800'
                 : item.statut === 'use'
-                ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-5000/30 dark:text-yellow-800'
                 : item.statut === 'defectueux'
-                ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                : 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                ? 'bg-red-100 text-red-700 dark:bg-red-5000/30 dark:text-red-800'
+                : 'bg-gray-100 text-gray-700 dark:bg-gray-5000/30 dark:text-gray-800'
             }`}>
               {item.statut}
             </span>

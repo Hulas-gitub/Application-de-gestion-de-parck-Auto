@@ -33,6 +33,10 @@ const Dashboard = () => {
   const [hoveredInterventionBar, setHoveredInterventionBar] = useState(null);
   const [hoveredDayBar, setHoveredDayBar] = useState(null);
   const [hoveredRoleBar, setHoveredRoleBar] = useState(null);
+  const [hoveredMarqueBar, setHoveredMarqueBar] = useState(null);
+  const [hoveredCategorieBar, setHoveredCategorieBar] = useState(null);
+  const [hoveredDocVehSegment, setHoveredDocVehSegment] = useState(null);
+  const [hoveredDocChaufSegment, setHoveredDocChaufSegment] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [animateCharts, setAnimateCharts] = useState(false);
@@ -263,6 +267,40 @@ const Dashboard = () => {
     { role: 'Chef PC Radio', count: 2, color: '#ec4899' }
   ];
 
+  // ─── NOUVEAUX GRAPHIQUES BASÉS SUR LA BASE DE DONNÉES ───
+  
+  // Véhicules par Marque (basé sur table marques/vehicules)
+  const vehiculesMarqueData = [
+    { marque: 'Toyota', count: 18, color: '#ef4444' },
+    { marque: 'Nissan', count: 12, color: '#f59e0b' },
+    { marque: 'Ford', count: 8, color: '#10b981' },
+    { marque: 'Hyundai', count: 5, color: '#3b82f6' },
+    { marque: 'Autres', count: 2, color: '#8b5cf6' }
+  ];
+
+  // Véhicules par Catégorie (basé sur table categories_vehicules)
+  const vehiculesCategorieData = [
+    { categorie: '4x4', count: 20, color: '#ef4444' },
+    { categorie: 'Camion', count: 8, color: '#f59e0b' },
+    { categorie: 'Utilitaire', count: 10, color: '#10b981' },
+    { categorie: 'Berline', count: 5, color: '#3b82f6' },
+    { categorie: 'Autres', count: 2, color: '#8b5cf6' }
+  ];
+
+  // Documents Véhicules - Statut (basé sur table documents_vehicules)
+  const documentsVehiculesData = [
+    { label: 'Assurance Valide', value: 35, color: '#10b981', percentage: 78 },
+    { label: 'Expire < 30j', value: 7, color: '#f59e0b', percentage: 15 },
+    { label: 'Expirés', value: 3, color: '#ef4444', percentage: 7 }
+  ];
+
+  // Documents Chauffeurs - Permis (basé sur table documents_chauffeurs)
+  const documentsChauffeursData = [
+    { label: 'Permis Valide', value: 24, color: '#10b981', percentage: 86 },
+    { label: 'Expire < 30j', value: 3, color: '#f59e0b', percentage: 11 },
+    { label: 'Expirés', value: 1, color: '#ef4444', percentage: 3 }
+  ];
+
   // Missions Data
   const missions = [
     { id: 'AB-1234-GA', route: 'Franceville - J. Mbourou', time: '08:30', status: 'En cours', icon: 'bi-car-front-fill' },
@@ -316,8 +354,9 @@ const Dashboard = () => {
   // ──────────────────────────────────────────
   // SHARED CHART TITLE
   // ──────────────────────────────────────────
-  const ChartTitle = ({ children }) => (
-    <h3 className={`text-sm font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+  const ChartTitle = ({ children, icon }) => (
+    <h3 className={`text-sm font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'} flex items-center gap-2`}>
+      {icon && <i className={`${icon} text-blue-500`}></i>}
       {children}
     </h3>
   );
@@ -411,12 +450,11 @@ const Dashboard = () => {
         </div>
 
         {/* ─── ROW 1 : Donut  |  État du Parc  |  Interventions Créées vs Résolues (span 1 each in 3-col) ─── */}
-        {/* We use a custom layout: 1fr 1fr 1.4fr so Interventions gets more room */}
         <div className="grid gap-5 mb-5" style={{ gridTemplateColumns: '1fr 1fr 1.4fr' }}>
 
           {/* ── Donut — Véhicules par Direction ── */}
           <ChartCard>
-            <ChartTitle>Véhicules par Direction</ChartTitle>
+            <ChartTitle icon="bi-pie-chart-fill">Véhicules par Direction</ChartTitle>
             <div className="flex-1 flex items-center justify-center relative">
               <svg width="140" height="140" viewBox="0 0 200 200">
                 {/* Dir. Générale 30% */}
@@ -492,7 +530,7 @@ const Dashboard = () => {
 
           {/* ── Stacked Bar — État du Parc  (all axes INSIDE SVG) ── */}
           <ChartCard>
-            <ChartTitle>État du Parc</ChartTitle>
+            <ChartTitle icon="bi-bar-chart-fill">État du Parc</ChartTitle>
             <div className="flex-1 flex flex-col justify-center">
               {/* SVG: viewBox includes left Y-axis (40px) and bottom X labels (18px) */}
               <svg width="100%" viewBox="0 0 260 175" className="overflow-visible">
@@ -575,15 +613,8 @@ const Dashboard = () => {
 
           {/* ── Line — Interventions Créées vs Résolues (larger chart area) ── */}
           <ChartCard>
-            <ChartTitle>Interventions Créées vs Résolues</ChartTitle>
+            <ChartTitle icon="bi-graph-up">Interventions Créées vs Résolues</ChartTitle>
             <div className="flex-1 flex flex-col justify-center">
-              {/*
-                SVG layout:
-                  Left axis labels  : x = 0..28
-                  Chart area        : x = 32 … 340  (width 308)
-                  Bottom x-labels   : y = 148..160
-                  viewBox height    : 165
-              */}
               <svg width="100%" viewBox="0 0 345 165" className="overflow-visible">
                 {/* Y-axis labels */}
                 {[60, 45, 30, 15, 0].map((val, i) => (
@@ -703,7 +734,7 @@ const Dashboard = () => {
 
           {/* ── Bar — Interventions / Jour ── */}
           <ChartCard>
-            <ChartTitle>Interventions / Jour</ChartTitle>
+            <ChartTitle icon="bi-calendar-week">Interventions / Jour</ChartTitle>
             <div className="flex-1 flex flex-col justify-center">
               <svg width="100%" viewBox="0 0 200 155" className="overflow-visible">
                 {/* Y-axis labels */}
@@ -767,7 +798,7 @@ const Dashboard = () => {
 
           {/* ── Bar — Utilisateurs par Rôle  (ALL 6 legends) ── */}
           <ChartCard>
-            <ChartTitle>Utilisateurs par Rôle</ChartTitle>
+            <ChartTitle icon="bi-people-fill">Utilisateurs par Rôle</ChartTitle>
             <div className="flex-1 flex flex-col justify-center">
               <svg width="100%" viewBox="0 0 220 155" className="overflow-visible">
                 {/* Y-axis labels */}
@@ -846,15 +877,8 @@ const Dashboard = () => {
 
           {/* ── Combined Bar+Line — Consommation & Économies ── */}
           <ChartCard>
-            <ChartTitle>Consommation & Économies</ChartTitle>
+            <ChartTitle icon="bi-fuel-pump">Consommation & Économies</ChartTitle>
             <div className="flex-1 flex flex-col justify-center">
-              {/*
-                Layout:
-                  Left Y  (consommation) : x 0..32
-                  Right Y (économies)    : x 310..345
-                  Chart area             : 34..308
-                  Bottom labels          : y 148..162
-              */}
               <svg width="100%" viewBox="0 0 350 165" className="overflow-visible">
                 {/* Left Y labels – consommation */}
                 {[8000, 6000, 4000, 2000, 0].map((val, i) => (
@@ -961,6 +985,281 @@ const Dashboard = () => {
               { label: 'Consommation (L)', color: '#10b981' },
               { label: 'Économies (CFA)', color: '#f59e0b' }
             ]} />
+          </ChartCard>
+        </div>
+
+        {/* ─── ROW 3 : NOUVEAUX GRAPHIQUES - Véhicules par Marque | Véhicules par Catégorie | Documents Véhicules ─── */}
+        <div className="grid gap-5 mb-5" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
+          
+          {/* ── Bar — Véhicules par Marque ── */}
+          <ChartCard>
+            <ChartTitle icon="bi-bookmark-star-fill">Véhicules par Marque</ChartTitle>
+            <div className="flex-1 flex flex-col justify-center">
+              <svg width="100%" viewBox="0 0 200 155" className="overflow-visible">
+                {/* Y-axis labels */}
+                {[20, 15, 10, 5, 0].map((val, i) => (
+                  <text key={`y-${i}`} x="22" y={16 + i * 28} textAnchor="end" fontSize="9" fill={darkMode ? '#6b7280' : '#9ca3af'}>
+                    {val}
+                  </text>
+                ))}
+                {/* Grid */}
+                {[0,1,2,3,4].map(i => (
+                  <line key={`g-${i}`} x1="26" y1={16 + i*28} x2="196" y2={16 + i*28} stroke={darkMode ? '#374151' : '#e5e7eb'} strokeWidth="0.7" />
+                ))}
+
+                {(() => {
+                  const chartLeft = 28;
+                  const chartW = 168;
+                  const slotW = chartW / vehiculesMarqueData.length;
+                  const baseY = 128;
+                  const chartH = 112;
+                  const maxVal = 20;
+
+                  return vehiculesMarqueData.map((d, idx) => {
+                    const centerX = chartLeft + slotW * idx + slotW / 2;
+                    const barW = 14;
+                    const x = centerX - barW / 2;
+                    const h = animateCharts ? (d.count / maxVal) * chartH : 0;
+
+                    return (
+                      <g key={idx}
+                        onMouseEnter={() => setHoveredMarqueBar(idx)}
+                        onMouseLeave={() => setHoveredMarqueBar(null)}
+                        className="cursor-pointer"
+                      >
+                        <rect x={x} y={baseY - h} width={barW} height={h} fill={d.color} rx="3"
+                          style={{ transition: `height 0.8s ease-out ${idx*0.1}s, y 0.8s ease-out ${idx*0.1}s` }}
+                        />
+                        <text x={centerX} y="147" textAnchor="middle" fontSize="8" fill={darkMode ? '#6b7280' : '#9ca3af'}>
+                          {d.marque.length > 6 ? d.marque.slice(0, 5) + '.' : d.marque}
+                        </text>
+
+                        {hoveredMarqueBar === idx && (
+                          <g>
+                            <rect x={centerX - 30} y={baseY - h - 34} width="60" height="26" rx="5" fill="#1f2937" />
+                            <text x={centerX} y={baseY - h - 20} textAnchor="middle" fontSize="8" fill="#fff" fontWeight="600">{d.marque}</text>
+                            <text x={centerX} y={baseY - h - 9} textAnchor="middle" fontSize="8" fill="#d1d5db">{d.count} véhicules</text>
+                          </g>
+                        )}
+                      </g>
+                    );
+                  });
+                })()}
+              </svg>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
+              {vehiculesMarqueData.map((d, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: d.color }}></div>
+                  <span className={`text-[10px] font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{d.marque}</span>
+                </div>
+              ))}
+            </div>
+          </ChartCard>
+
+          {/* ── Bar — Véhicules par Catégorie ── */}
+          <ChartCard>
+            <ChartTitle icon="bi-grid-3x3-gap-fill">Véhicules par Catégorie</ChartTitle>
+            <div className="flex-1 flex flex-col justify-center">
+              <svg width="100%" viewBox="0 0 200 155" className="overflow-visible">
+                {/* Y-axis labels */}
+                {[20, 15, 10, 5, 0].map((val, i) => (
+                  <text key={`y-${i}`} x="22" y={16 + i * 28} textAnchor="end" fontSize="9" fill={darkMode ? '#6b7280' : '#9ca3af'}>
+                    {val}
+                  </text>
+                ))}
+                {/* Grid */}
+                {[0,1,2,3,4].map(i => (
+                  <line key={`g-${i}`} x1="26" y1={16 + i*28} x2="196" y2={16 + i*28} stroke={darkMode ? '#374151' : '#e5e7eb'} strokeWidth="0.7" />
+                ))}
+
+                {(() => {
+                  const chartLeft = 28;
+                  const chartW = 168;
+                  const slotW = chartW / vehiculesCategorieData.length;
+                  const baseY = 128;
+                  const chartH = 112;
+                  const maxVal = 22;
+
+                  return vehiculesCategorieData.map((d, idx) => {
+                    const centerX = chartLeft + slotW * idx + slotW / 2;
+                    const barW = 14;
+                    const x = centerX - barW / 2;
+                    const h = animateCharts ? (d.count / maxVal) * chartH : 0;
+
+                    return (
+                      <g key={idx}
+                        onMouseEnter={() => setHoveredCategorieBar(idx)}
+                        onMouseLeave={() => setHoveredCategorieBar(null)}
+                        className="cursor-pointer"
+                      >
+                        <rect x={x} y={baseY - h} width={barW} height={h} fill={d.color} rx="3"
+                          style={{ transition: `height 0.8s ease-out ${idx*0.1}s, y 0.8s ease-out ${idx*0.1}s` }}
+                        />
+                        <text x={centerX} y="147" textAnchor="middle" fontSize="8" fill={darkMode ? '#6b7280' : '#9ca3af'}>
+                          {d.categorie.length > 7 ? d.categorie.slice(0, 6) + '.' : d.categorie}
+                        </text>
+
+                        {hoveredCategorieBar === idx && (
+                          <g>
+                            <rect x={centerX - 32} y={baseY - h - 34} width="64" height="26" rx="5" fill="#1f2937" />
+                            <text x={centerX} y={baseY - h - 20} textAnchor="middle" fontSize="8" fill="#fff" fontWeight="600">{d.categorie}</text>
+                            <text x={centerX} y={baseY - h - 9} textAnchor="middle" fontSize="8" fill="#d1d5db">{d.count} véhicules</text>
+                          </g>
+                        )}
+                      </g>
+                    );
+                  });
+                })()}
+              </svg>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
+              {vehiculesCategorieData.map((d, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: d.color }}></div>
+                  <span className={`text-[10px] font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{d.categorie}</span>
+                </div>
+              ))}
+            </div>
+          </ChartCard>
+
+          {/* ── Donut — Documents Véhicules ── */}
+          <ChartCard>
+            <ChartTitle icon="bi-file-earmark-text-fill">Documents Véhicules</ChartTitle>
+            <div className="flex-1 flex items-center justify-center relative">
+              <svg width="140" height="140" viewBox="0 0 200 200">
+                {/* Valide 78% */}
+                <circle cx="100" cy="100" r="70" fill="none" stroke="#10b981" strokeWidth="32"
+                  strokeDasharray="343.27 439.82"
+                  strokeDashoffset={animateCharts ? 0 : 439.82}
+                  onMouseEnter={() => setHoveredDocVehSegment('valide')}
+                  onMouseLeave={() => setHoveredDocVehSegment(null)}
+                  className="transition-all duration-200 hover:stroke-opacity-80 cursor-pointer"
+                  style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+                />
+                {/* Expire < 30j 15% */}
+                <circle cx="100" cy="100" r="70" fill="none" stroke="#f59e0b" strokeWidth="32"
+                  strokeDasharray="65.97 439.82"
+                  strokeDashoffset={animateCharts ? -343.27 : -439.82}
+                  onMouseEnter={() => setHoveredDocVehSegment('expire_bientot')}
+                  onMouseLeave={() => setHoveredDocVehSegment(null)}
+                  className="transition-all duration-200 hover:stroke-opacity-80 cursor-pointer"
+                  style={{ transition: 'stroke-dashoffset 1s ease-out 0.2s' }}
+                />
+                {/* Expirés 7% */}
+                <circle cx="100" cy="100" r="70" fill="none" stroke="#ef4444" strokeWidth="32"
+                  strokeDasharray="30.79 439.82"
+                  strokeDashoffset={animateCharts ? -409.24 : -439.82}
+                  onMouseEnter={() => setHoveredDocVehSegment('expire')}
+                  onMouseLeave={() => setHoveredDocVehSegment(null)}
+                  className="transition-all duration-200 hover:stroke-opacity-80 cursor-pointer"
+                  style={{ transition: 'stroke-dashoffset 1s ease-out 0.4s' }}
+                />
+              </svg>
+
+              {hoveredDocVehSegment && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-1.5 rounded-lg shadow-lg text-sm font-bold pointer-events-none z-10">
+                  {hoveredDocVehSegment === 'valide' && '78%'}
+                  {hoveredDocVehSegment === 'expire_bientot' && '15%'}
+                  {hoveredDocVehSegment === 'expire' && '7%'}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              {documentsVehiculesData.map((item, idx) => (
+                <div key={idx} className={`flex items-center justify-between px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors`}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
+                    <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{item.label}</span>
+                  </div>
+                  <span className={`text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{item.percentage}%</span>
+                </div>
+              ))}
+            </div>
+          </ChartCard>
+        </div>
+
+        {/* ─── ROW 4 : Documents Chauffeurs | ESPACE POUR FUTURS GRAPHIQUES ─── */}
+        <div className="grid gap-5 mb-5" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
+          
+          {/* ── Donut — Documents Chauffeurs ── */}
+          <ChartCard>
+            <ChartTitle icon="bi-person-badge-fill">Documents Chauffeurs</ChartTitle>
+            <div className="flex-1 flex items-center justify-center relative">
+              <svg width="140" height="140" viewBox="0 0 200 200">
+                {/* Valide 86% */}
+                <circle cx="100" cy="100" r="70" fill="none" stroke="#10b981" strokeWidth="32"
+                  strokeDasharray="378.24 439.82"
+                  strokeDashoffset={animateCharts ? 0 : 439.82}
+                  onMouseEnter={() => setHoveredDocChaufSegment('valide')}
+                  onMouseLeave={() => setHoveredDocChaufSegment(null)}
+                  className="transition-all duration-200 hover:stroke-opacity-80 cursor-pointer"
+                  style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+                />
+                {/* Expire < 30j 11% */}
+                <circle cx="100" cy="100" r="70" fill="none" stroke="#f59e0b" strokeWidth="32"
+                  strokeDasharray="48.38 439.82"
+                  strokeDashoffset={animateCharts ? -378.24 : -439.82}
+                  onMouseEnter={() => setHoveredDocChaufSegment('expire_bientot')}
+                  onMouseLeave={() => setHoveredDocChaufSegment(null)}
+                  className="transition-all duration-200 hover:stroke-opacity-80 cursor-pointer"
+                  style={{ transition: 'stroke-dashoffset 1s ease-out 0.2s' }}
+                />
+                {/* Expirés 3% */}
+                <circle cx="100" cy="100" r="70" fill="none" stroke="#ef4444" strokeWidth="32"
+                  strokeDasharray="13.19 439.82"
+                  strokeDashoffset={animateCharts ? -426.62 : -439.82}
+                  onMouseEnter={() => setHoveredDocChaufSegment('expire')}
+                  onMouseLeave={() => setHoveredDocChaufSegment(null)}
+                  className="transition-all duration-200 hover:stroke-opacity-80 cursor-pointer"
+                  style={{ transition: 'stroke-dashoffset 1s ease-out 0.4s' }}
+                />
+              </svg>
+
+              {hoveredDocChaufSegment && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-1.5 rounded-lg shadow-lg text-sm font-bold pointer-events-none z-10">
+                  {hoveredDocChaufSegment === 'valide' && '86%'}
+                  {hoveredDocChaufSegment === 'expire_bientot' && '11%'}
+                  {hoveredDocChaufSegment === 'expire' && '3%'}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              {documentsChauffeursData.map((item, idx) => (
+                <div key={idx} className={`flex items-center justify-between px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors`}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
+                    <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{item.label}</span>
+                  </div>
+                  <span className={`text-xs font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{item.percentage}%</span>
+                </div>
+              ))}
+            </div>
+          </ChartCard>
+
+          {/* Espace pour futurs graphiques */}
+          <ChartCard>
+            <ChartTitle icon="bi-graph-up-arrow">KPI Véhicules</ChartTitle>
+            <div className="flex-1 flex items-center justify-center">
+              <div className={`text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                <i className="bi bi-bar-chart text-4xl mb-2"></i>
+                <p className="text-sm">Graphique à venir</p>
+              </div>
+            </div>
+          </ChartCard>
+
+          <ChartCard>
+            <ChartTitle icon="bi-speedometer">Performance Chauffeurs</ChartTitle>
+            <div className="flex-1 flex items-center justify-center">
+              <div className={`text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                <i className="bi bi-trophy text-4xl mb-2"></i>
+                <p className="text-sm">Graphique à venir</p>
+              </div>
+            </div>
           </ChartCard>
         </div>
 
